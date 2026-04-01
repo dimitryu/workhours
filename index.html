@@ -624,19 +624,27 @@ async function doRegister() {
   if (!name || !email || !pwd) { toast('מלא את כל השדות', true); return; }
   if (pwd !== pwd2) { toast('הסיסמאות לא תואמות', true); return; }
   if (pwd.length < 6) { toast('סיסמה חייבת לפחות 6 תווים', true); return; }
+  loading(true, 'רושם...');
   try {
-    loading(true, 'רושם...');
     const cred = await auth.createUserWithEmailAndPassword(email, pwd);
-    await db.collection('users').doc(cred.user.uid).set({
-      name, email, activeSession: null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    // Save display name first so onAuthStateChanged can read it
     await cred.user.updateProfile({ displayName: name });
+    // Save to Firestore (best-effort — may fail if Firestore rules not set yet)
+    try {
+      await db.collection('users').doc(cred.user.uid).set({
+        name, email, activeSession: null,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch (fsErr) {
+      console.warn('Firestore write skipped (check rules):', fsErr.code);
+    }
+    loading(false); // onAuthStateChanged will take it from here
   } catch (e) {
     loading(false);
     const msgs = {
       'auth/email-already-in-use': 'אימייל כבר קיים',
       'auth/weak-password': 'סיסמה חלשה מדי',
+      'auth/invalid-email': 'אימייל לא תקין',
     };
     toast(msgs[e.code] || e.message, true);
   }
@@ -652,17 +660,26 @@ async function doLogout() {
 //  USER PROFILE
 // ═══════════════════════════════════════════════════════════
 async function loadUserProfile() {
-  const doc = await db.collection('users').doc(S.user.uid).get();
-  if (doc.exists) {
-    S.userName = doc.data().name || S.user.displayName || S.user.email;
-  } else {
+  try {
+    const doc = await db.collection('users').doc(S.user.uid).get();
+    if (doc.exists) {
+      S.userName = doc.data().name || S.user.displayName || S.user.email;
+    } else {
+      S.userName = S.user.displayName || S.user.email;
+      // Try to create the profile doc (may fail if Firestore rules not updated)
+      try {
+        await db.collection('users').doc(S.user.uid).set({
+          name: S.userName, email: S.user.email, activeSession: null,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch (_) {}
+    }
+  } catch (e) {
+    // Firestore rules may be blocking reads — fall back to Auth displayName
+    console.warn('Could not load profile from Firestore (check rules):', e.code);
     S.userName = S.user.displayName || S.user.email;
-    await db.collection('users').doc(S.user.uid).set({
-      name: S.userName, email: S.user.email, activeSession: null,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
   }
-  const initials = S.userName.charAt(0).toUpperCase();
+  const initials = S.userName ? S.userName.charAt(0).toUpperCase() : '?';
   const nameEl = qs('user-name-hdr');
   const avatarEl = qs('hdr-avatar');
   if (nameEl) nameEl.textContent = S.userName;
@@ -673,9 +690,14 @@ async function loadUserProfile() {
 //  JOBS
 // ═══════════════════════════════════════════════════════════
 async function loadJobs() {
-  const snap = await db.collection('users').doc(S.user.uid)
-    .collection('jobs').orderBy('createdAt', 'asc').get();
-  S.jobs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const snap = await db.collection('users').doc(S.user.uid)
+      .collection('jobs').orderBy('createdAt', 'asc').get();
+    S.jobs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.warn('loadJobs failed (check Firestore rules):', e.code);
+    S.jobs = [];
+  }
 }
 
 function getJob(id) {
@@ -707,12 +729,17 @@ async function deleteJobById(jobId) {
 //  ENTRIES
 // ═══════════════════════════════════════════════════════════
 async function loadEntries() {
-  const startDate = `${S.year}-${String(S.month + 1).padStart(2, '0')}-01`;
-  const endDate   = `${S.year}-${String(S.month + 1).padStart(2, '0')}-31`;
-  const snap = await db.collection('users').doc(S.user.uid).collection('entries')
-    .where('date', '>=', startDate).where('date', '<=', endDate)
-    .orderBy('date', 'desc').orderBy('clockIn', 'desc').get();
-  S.entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  try {
+    const startDate = `${S.year}-${String(S.month + 1).padStart(2, '0')}-01`;
+    const endDate   = `${S.year}-${String(S.month + 1).padStart(2, '0')}-31`;
+    const snap = await db.collection('users').doc(S.user.uid).collection('entries')
+      .where('date', '>=', startDate).where('date', '<=', endDate)
+      .orderBy('date', 'desc').orderBy('clockIn', 'desc').get();
+    S.entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  } catch (e) {
+    console.warn('loadEntries failed (check Firestore rules):', e.code);
+    S.entries = [];
+  }
 }
 
 async function saveEntryData(data) {
@@ -741,10 +768,14 @@ async function deleteEntryById(entryId) {
 //  ACTIVE SESSION (CLOCK IN/OUT)
 // ═══════════════════════════════════════════════════════════
 async function initActiveSession() {
-  const doc = await db.collection('users').doc(S.user.uid).get();
-  if (doc.exists && doc.data().activeSession) {
-    S.activeSession = doc.data().activeSession;
-    startTimer();
+  try {
+    const doc = await db.collection('users').doc(S.user.uid).get();
+    if (doc.exists && doc.data().activeSession) {
+      S.activeSession = doc.data().activeSession;
+      startTimer();
+    }
+  } catch (e) {
+    console.warn('initActiveSession failed (check Firestore rules):', e.code);
   }
 }
 
