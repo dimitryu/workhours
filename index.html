@@ -460,11 +460,9 @@ const JOB_COLORS = ['#3b82f6','#10b981','#8b5cf6','#f59e0b','#ef4444','#06b6d4',
 const HE_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 
 // ═══════════════════════════════════════════════════════════
-//  FIREBASE
+//  FIREBASE — initialized after window load (see bottom)
 // ═══════════════════════════════════════════════════════════
-firebase.initializeApp(FIREBASE_CONFIG);
-const auth = firebase.auth();
-const db = firebase.firestore();
+let auth, db;
 
 // ═══════════════════════════════════════════════════════════
 //  STATE
@@ -598,29 +596,6 @@ function switchAuthTab(tab) {
 // ═══════════════════════════════════════════════════════════
 //  AUTH
 // ═══════════════════════════════════════════════════════════
-auth.onAuthStateChanged(async user => {
-  if (user) {
-    S.user = user;
-    loading(true, 'טוען...');
-    try {
-      await loadUserProfile();
-      await loadJobs();
-      await initActiveSession();
-      await loadEntries();
-      showApp();
-    } catch (e) {
-      console.error(e);
-      toast('שגיאה בטעינה: ' + e.message, true);
-    } finally {
-      loading(false);
-    }
-  } else {
-    S.user = null;
-    stopTimer();
-    showAuth();
-  }
-});
-
 async function doLogin() {
   const email = qs('login-email').value.trim();
   const pwd   = qs('login-pwd').value;
@@ -1590,14 +1565,66 @@ function applyScanResult() {
 }
 
 // ═══════════════════════════════════════════════════════════
-//  SERVICE WORKER
+//  INIT — runs after all scripts are loaded
 // ═══════════════════════════════════════════════════════════
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
+window.addEventListener('load', () => {
+  // Service Worker
+  if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
-      .catch(e => console.warn('SW registration failed:', e));
+      .catch(e => console.warn('SW:', e));
+  }
+
+  // Firebase guard
+  if (typeof firebase === 'undefined') {
+    document.body.innerHTML = `
+      <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;
+        background:#1d4ed8;color:#fff;font-family:Rubik,Arial,sans-serif;text-align:center;padding:24px;direction:rtl">
+        <div>
+          <div style="font-size:50px;margin-bottom:16px">&#x26A0;&#xFE0F;</div>
+          <div style="font-size:20px;font-weight:700;margin-bottom:8px">שגיאת חיבור</div>
+          <div style="font-size:14px;opacity:.8;margin-bottom:20px">Firebase לא נטען — בדוק חיבור לאינטרנט ורענן</div>
+          <button onclick="location.reload()" style="background:#fff;color:#1d4ed8;border:none;
+            padding:12px 28px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer">
+            רענן
+          </button>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // Initialize Firebase
+  try {
+    firebase.initializeApp(FIREBASE_CONFIG);
+  } catch(e) {
+    if (!e.message.includes('already')) console.warn(e);
+  }
+  auth = firebase.auth();
+  db   = firebase.firestore();
+
+  // Start auth listener
+  auth.onAuthStateChanged(async user => {
+    if (user) {
+      S.user = user;
+      loading(true, 'טוען...');
+      try {
+        await loadUserProfile();
+        await loadJobs();
+        await initActiveSession();
+        await loadEntries();
+        showApp();
+      } catch (e) {
+        console.error(e);
+        toast('שגיאה בטעינה: ' + e.message, true);
+      } finally {
+        loading(false);
+      }
+    } else {
+      S.user = null;
+      stopTimer();
+      showAuth();
+    }
   });
-}
+});
 </script>
 </body>
 </html>
