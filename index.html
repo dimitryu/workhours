@@ -9,6 +9,9 @@
 <meta name="theme-color" content="#1d4ed8">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+<link rel="shortcut icon" href="icons/icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>WorkHours</title>
 <style>
@@ -537,6 +540,13 @@ function parseToDate(dateStr, timeStr) {
   return new Date(`${dateStr}T${timeStr}:00`);
 }
 
+// Convert YYYY-MM-DD → DD/MM/YYYY for display
+function fmtDateDisplay(isoDate) {
+  if (!isoDate) return '';
+  const [y, m, d] = isoDate.split('-');
+  return `${d}/${m}/${y}`;
+}
+
 // ═══════════════════════════════════════════════════════════
 //  OVERTIME CALCULATION (Israeli law, per job per day)
 // ═══════════════════════════════════════════════════════════
@@ -732,12 +742,14 @@ async function loadEntries() {
   try {
     const startDate = `${S.year}-${String(S.month + 1).padStart(2, '0')}-01`;
     const endDate   = `${S.year}-${String(S.month + 1).padStart(2, '0')}-31`;
+    // Single orderBy avoids needing a composite Firestore index
     const snap = await db.collection('users').doc(S.user.uid).collection('entries')
       .where('date', '>=', startDate).where('date', '<=', endDate)
-      .orderBy('date', 'desc').orderBy('clockIn', 'desc').get();
-    S.entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      .orderBy('date', 'desc').get();
+    S.entries = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      .sort((a, b) => b.date.localeCompare(a.date) || (b.clockIn||'').localeCompare(a.clockIn||''));
   } catch (e) {
-    console.warn('loadEntries failed (check Firestore rules):', e.code);
+    console.warn('loadEntries failed (check Firestore rules):', e.code, e.message);
     S.entries = [];
   }
 }
@@ -940,21 +952,10 @@ function renderHome() {
       </div>`;
   }
 
-  // Job clock-in buttons
-  let clockBtns = '';
-  if (S.jobs.length > 0 && !S.activeSession) {
-    const btns = S.jobs.map(j => `
-      <button class="job-btn" style="border-color:${j.color};color:${j.color}" onclick="clockIn('${j.id}')">
-        <div class="job-btn-dot" style="background:${j.color}"></div>
-        <span>${j.name} — ₪${j.hourlyRate}/שעה</span>
-      </button>`).join('');
-    clockBtns = `
-      <div class="card">
-        <div class="card-title">⚡ כניסה מהירה לעבודה</div>
-        <div class="job-btns-grid">${btns}</div>
-      </div>`;
-  } else if (S.jobs.length === 0) {
-    clockBtns = `
+  // No jobs warning
+  let noJobsHtml = '';
+  if (S.jobs.length === 0) {
+    noJobsHtml = `
       <div class="card empty-state">
         <div class="es-icon">💼</div>
         <div class="es-title">אין עבודות עדיין</div>
@@ -962,6 +963,28 @@ function renderHome() {
         <button class="btn btn-primary mt8" onclick="showScreen('settings')">⚙️ הגדרות</button>
       </div>`;
   }
+
+  // Inline scan card for home
+  const homeScanHtml = `
+    <div class="card">
+      <div class="card-title">📷 סריקת תלוש</div>
+      <div class="camera-btns" style="margin-bottom:10px">
+        <button class="btn btn-primary" style="flex:1" onclick="homeStartCamera()">🎬 מצלמה</button>
+        <button class="btn btn-outline" style="flex:1" onclick="qs('home-gallery-file').click()">🖼 גלריה</button>
+      </div>
+      <input type="file" id="home-gallery-file" accept="image/*" style="display:none" onchange="homeHandleGallery(event)">
+      <div id="home-camera-wrap" style="display:none">
+        <div id="home-camera-container" style="position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3;margin-bottom:8px">
+          <video id="home-camera-video" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;display:block"></video>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-success" style="flex:1" onclick="homeCapturePhoto()">📸 צלם</button>
+          <button class="btn btn-ghost" style="flex:1" onclick="homeStopCamera()">✕ סגור</button>
+        </div>
+      </div>
+      <div id="home-scan-preview"></div>
+      <div id="home-scan-result"></div>
+    </div>`;
 
   // Recent entries (this month, not today, up to 10)
   const recent = S.entries.filter(e => e.date !== today).slice(0, 10);
@@ -972,7 +995,7 @@ function renderHome() {
         <div class="dot" style="background:${e.jobColor||'#3b82f6'}"></div>
         <div class="er-details">
           <div class="er-job">${e.jobName}</div>
-          <div class="er-time">${e.date} | ${e.clockIn} – ${e.clockOut}</div>
+          <div class="er-time">${fmtDateDisplay(e.date)} | ${e.clockIn} – ${e.clockOut}</div>
         </div>
         <div class="er-right">
           <div class="er-hours">${fmtMins(e.totalMins)}</div>
@@ -988,7 +1011,7 @@ function renderHome() {
 
   const manualBtn = `<button class="btn btn-outline" onclick="openAddEntry({})">✏️ הכנסה ידנית</button>`;
 
-  setHTML('home-content', activeHtml + clockBtns + todayHtml + recentHtml + manualBtn);
+  setHTML('home-content', activeHtml + noJobsHtml + homeScanHtml + todayHtml + recentHtml + manualBtn);
   if (S.activeSession) updateTimerDisplay();
 }
 
@@ -1006,7 +1029,7 @@ function renderReport() {
   const monthSel = months.map(({ m, y }) => {
     const active = m === S.month && y === S.year;
     const yLabel = y !== now.getFullYear() ? ` ${y}` : '';
-    return `<button class="month-chip${active?' active':''}" onclick="selectMonth(${m},${y})">${HE_MONTHS[m]}${yLabel}</button>`;
+    return `<button class="month-chip${active?' active':''}" onclick="selectMonth(${m},${y})" ${active?'id="active-month-chip"':''}>${HE_MONTHS[m]}${yLabel}</button>`;
   }).join('');
 
   // Aggregate
@@ -1100,11 +1123,16 @@ function renderReport() {
   const addEntryBtn = `<button class="btn btn-outline" onclick="openAddEntry({})">✏️ הוסף רשומה</button>`;
 
   setHTML('report-content',
-    `<div class="month-sel">${monthSel}</div>` +
+    `<div class="month-sel" id="month-sel-row">${monthSel}</div>` +
     statsHtml + jobBreakHtml +
     `<div class="card"><div class="card-title">📅 פירוט יומי</div>${dailyHtml}</div>` +
     addEntryBtn
   );
+  // Scroll active month chip into view
+  setTimeout(() => {
+    const chip = qs('active-month-chip');
+    if (chip) chip.scrollIntoView({ inline: 'center', behavior: 'smooth' });
+  }, 50);
 }
 
 async function selectMonth(m, y) {
@@ -1440,6 +1468,108 @@ async function startCamera() {
 
 function stopCamera() {
   if (S.camera) { S.camera.getTracks().forEach(t => t.stop()); S.camera = null; }
+}
+
+// ── Home screen camera helpers ──
+async function homeStartCamera() {
+  try {
+    S.camera = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width: { ideal: 1280 } }, audio: false
+    });
+    const video = qs('home-camera-video');
+    if (video) video.srcObject = S.camera;
+    const wrap = qs('home-camera-wrap');
+    if (wrap) wrap.style.display = 'block';
+    toast('מצלמה פעילה');
+  } catch (e) {
+    toast('לא ניתן לגשת למצלמה:\n' + e.message, true);
+  }
+}
+
+function homeStopCamera() {
+  stopCamera();
+  const wrap = qs('home-camera-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+async function homeCapturePhoto() {
+  const video = qs('home-camera-video');
+  if (!video) return;
+  const canvas = document.createElement('canvas');
+  canvas.width  = video.videoWidth  || 640;
+  canvas.height = video.videoHeight || 480;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  homeStopCamera();
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+  const b64 = dataUrl.split(',')[1];
+  setHTML('home-scan-preview', `<img src="${dataUrl}" style="width:100%;border-radius:12px;margin-bottom:8px;display:block;max-height:200px;object-fit:cover">`);
+  await homeProcessScan(b64, 'image/jpeg');
+}
+
+function homeHandleGallery(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { toast('קובץ לא תקין', true); return; }
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const dataUrl = ev.target.result;
+    setHTML('home-scan-preview', `<img src="${dataUrl}" style="width:100%;border-radius:12px;margin-bottom:8px;display:block;max-height:200px;object-fit:cover">`);
+    await homeProcessScan(dataUrl.split(',')[1], file.type);
+  };
+  reader.readAsDataURL(file);
+}
+
+async function homeProcessScan(b64, mime) {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  if (!apiKey) {
+    setHTML('home-scan-result', `<div style="font-size:13px;color:var(--text3);text-align:center;padding:8px">הוסף מפתח API בהגדרות לניתוח אוטומטי</div>`);
+    return;
+  }
+  setHTML('home-scan-result', `<div class="scan-loading"><div class="spinner"></div><span>מנתח תלוש...</span></div>`);
+  try {
+    const result = await analyzeWithClaude(b64, mime);
+    // Render result inline in home
+    const confMap = { high: '✅ גבוהה', medium: '⚠️ בינונית', low: '❌ נמוכה' };
+    const jobOpts = S.jobs.map(j => `<option value="${j.id}">${j.name}</option>`).join('');
+    setHTML('home-scan-result', `
+      <div style="margin-top:8px">
+        <div style="font-size:13px;color:var(--text3);margin-bottom:10px">דיוק: ${confMap[result.confidence]||'-'}</div>
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label">תאריך</label>
+            <input type="date" class="form-input" id="hsr-date" value="${result.date||fmtDateISO(new Date())}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">עבודה</label>
+            <select class="form-input" id="hsr-job"><option value="">בחר...</option>${jobOpts}</select>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="form-group">
+            <label class="form-label">כניסה</label>
+            <input type="time" class="form-input" id="hsr-in" value="${result.clockIn||''}">
+          </div>
+          <div class="form-group">
+            <label class="form-label">יציאה</label>
+            <input type="time" class="form-input" id="hsr-out" value="${result.clockOut||''}">
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="homeApplyScan()">💾 שמור רשומה</button>
+      </div>`);
+  } catch (e) {
+    setHTML('home-scan-result', `<div style="color:var(--red);font-size:13px;text-align:center">❌ שגיאה: ${e.message}</div>`);
+  }
+}
+
+function homeApplyScan() {
+  const date     = qs('hsr-date')?.value;
+  const clockIn  = qs('hsr-in')?.value;
+  const clockOut = qs('hsr-out')?.value;
+  const jobId    = qs('hsr-job')?.value;
+  if (!jobId) { toast('בחר עבודה', true); return; }
+  openAddEntry({ date, clockIn, clockOut, jobId });
+  setHTML('home-scan-preview', '');
+  setHTML('home-scan-result', '');
 }
 
 async function capturePhoto() {
