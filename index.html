@@ -9,9 +9,10 @@
 <meta name="theme-color" content="#1d4ed8">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
-<link rel="shortcut icon" href="icons/icon-192.png">
+<link rel="shortcut icon" href="icons/favicon-32.png">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <title>WorkHours</title>
 <style>
@@ -253,7 +254,7 @@ select.form-input{cursor:pointer}
     <div class="auth-logo-icon">⏱</div>
     <div class="auth-logo-title">WorkHours</div>
     <div class="auth-logo-sub">ניהול שעות עבודה</div>
-    <div class="auth-version">v1.0.0</div>
+    <div class="auth-version">v1.1.0</div>
   </div>
 
   <div class="auth-card">
@@ -306,7 +307,7 @@ select.form-input{cursor:pointer}
     <div class="header-brand">
       <span class="header-logo">⏱</span>
       <span class="header-title">WorkHours</span>
-      <span class="version-badge">v1.0.0</span>
+      <span class="version-badge">v1.1.0</span>
     </div>
     <div class="header-user">
       <span class="user-name-hdr" id="user-name-hdr"></span>
@@ -349,9 +350,6 @@ select.form-input{cursor:pointer}
     <button class="nav-btn" id="nav-report" onclick="showScreen('report')">
       <span class="ni">📊</span><span>דוח</span>
     </button>
-    <button class="nav-btn" id="nav-scan" onclick="showScreen('scan')">
-      <span class="ni">📷</span><span>סרוק</span>
-    </button>
     <button class="nav-btn" id="nav-settings" onclick="showScreen('settings')">
       <span class="ni">⚙️</span><span>הגדרות</span>
     </button>
@@ -372,8 +370,10 @@ select.form-input{cursor:pointer}
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">תאריך</label>
-      <input type="date" class="form-input" id="entry-date" onchange="updateEntryCalc()">
+      <label class="form-label">תאריך (DD/MM/YYYY)</label>
+      <input type="text" class="form-input" id="entry-date-display" placeholder="31/12/2026"
+        maxlength="10" inputmode="numeric" oninput="onDateDisplayInput(this)" onchange="updateEntryCalc()">
+      <input type="hidden" id="entry-date">
     </div>
     <div class="two-col">
       <div class="form-group">
@@ -431,9 +431,6 @@ select.form-input{cursor:pointer}
       <div class="co-row"><span class="co-label">⏰ כניסה</span><span class="co-val" id="co-in">-</span></div>
       <div class="co-row"><span class="co-label">🕐 יציאה</span><span class="co-val" id="co-out">-</span></div>
       <div class="co-row"><span class="co-label">⏱ סה"כ שעות</span><span class="co-val" id="co-total">-</span></div>
-      <div id="co-ot-row" class="co-row" style="display:none">
-        <span class="co-label">📈 שעות נוספות</span><span class="co-val" style="color:var(--amber)" id="co-ot">-</span>
-      </div>
       <div class="co-row"><span class="co-label">💰 הכנסה</span><span class="co-val co-earn" id="co-earn">-</span></div>
     </div>
     <button class="btn btn-success" onclick="confirmClockOut()">✅ אישור - צא מעבודה</button>
@@ -450,7 +447,7 @@ select.form-input{cursor:pointer}
 // ═══════════════════════════════════════════════════════════
 //  CONSTANTS
 // ═══════════════════════════════════════════════════════════
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBAcjqAATlZ5ZWTC8VfbzCoHoY6zLKbw6o",
   authDomain: "workhours-9815f.firebaseapp.com",
@@ -547,22 +544,43 @@ function fmtDateDisplay(isoDate) {
   return `${d}/${m}/${y}`;
 }
 
+// Convert DD/MM/YYYY → YYYY-MM-DD for storage
+function displayToISO(display) {
+  if (!display) return '';
+  const parts = display.replace(/[^0-9]/g, '');
+  if (parts.length < 8) return '';
+  const d = parts.slice(0,2), m = parts.slice(2,4), y = parts.slice(4,8);
+  if (+m < 1 || +m > 12 || +d < 1 || +d > 31) return '';
+  return `${y}-${m}-${d}`;
+}
+
+// Auto-format date input as user types: DD/MM/YYYY
+function onDateDisplayInput(el) {
+  let raw = el.value.replace(/[^0-9]/g, '');
+  let out = '';
+  if (raw.length > 0) out += raw.slice(0,2);
+  if (raw.length > 2) out += '/' + raw.slice(2,4);
+  if (raw.length > 4) out += '/' + raw.slice(4,8);
+  el.value = out;
+  // Sync hidden field
+  const hidden = qs('entry-date');
+  if (hidden) hidden.value = displayToISO(out);
+  updateEntryCalc();
+}
+
+// Parse DD/MM/YYYY text to ISO for scan results
+function parseScanDate(displayOrISO) {
+  if (!displayOrISO) return '';
+  if (displayOrISO.includes('-')) return displayOrISO; // already ISO
+  return displayToISO(displayOrISO);
+}
+
 // ═══════════════════════════════════════════════════════════
 //  OVERTIME CALCULATION (Israeli law, per job per day)
 // ═══════════════════════════════════════════════════════════
 function calcEarnings(totalMins, hourlyRate) {
-  const h = totalMins / 60;
-  let reg = 0, ot1 = 0, ot2 = 0;
-  if (h <= 8)       { reg = h; }
-  else if (h <= 10) { reg = 8; ot1 = h - 8; }
-  else              { reg = 8; ot1 = 2; ot2 = h - 10; }
-  return {
-    totalMins,
-    regMins:  Math.round(reg * 60),
-    ot1Mins:  Math.round(ot1 * 60),
-    ot2Mins:  Math.round(ot2 * 60),
-    earnings: Math.round((reg * hourlyRate + ot1 * hourlyRate * 1.25 + ot2 * hourlyRate * 1.5) * 100) / 100
-  };
+  const earnings = Math.round((totalMins / 60) * hourlyRate * 100) / 100;
+  return { totalMins, earnings };
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -828,14 +846,6 @@ async function clockOut() {
   qs('co-total').textContent    = fmtMins(totalMins);
   qs('co-earn').textContent     = fmtMoney(ec.earnings);
 
-  const otMins = ec.ot1Mins + ec.ot2Mins;
-  if (otMins > 0) {
-    qs('co-ot-row').style.display = 'flex';
-    qs('co-ot').textContent = fmtMins(otMins);
-  } else {
-    qs('co-ot-row').style.display = 'none';
-  }
-
   window._pendingClockOut = { now, totalMins, ec, job };
   showModal('clockout-modal');
 }
@@ -851,8 +861,7 @@ async function confirmClockOut() {
     date: fmtDateISO(clockInDate),
     clockIn: fmtHHMM(clockInDate),
     clockOut: fmtHHMM(now),
-    totalMins: ec.totalMins, regMins: ec.regMins,
-    ot1Mins: ec.ot1Mins, ot2Mins: ec.ot2Mins,
+    totalMins: ec.totalMins,
     earnings: ec.earnings, hourlyRate: job.hourlyRate || 0,
     notes: ''
   };
@@ -939,7 +948,6 @@ function renderHome() {
         <div class="er-right">
           <div class="er-hours">${fmtMins(e.totalMins)}</div>
           ${e.earnings > 0 ? `<div class="er-earn">${fmtMoney(e.earnings)}</div>` : ''}
-          ${(e.ot1Mins||0) + (e.ot2Mins||0) > 0 ? '<span class="ot-badge">נוספות</span>' : ''}
         </div>
       </div>`).join('');
     todayHtml = `
@@ -999,7 +1007,6 @@ function renderHome() {
         </div>
         <div class="er-right">
           <div class="er-hours">${fmtMins(e.totalMins)}</div>
-          ${(e.ot1Mins||0)+(e.ot2Mins||0)>0 ? '<span class="ot-badge">נוספות</span>' : ''}
         </div>
       </div>`).join('');
     recentHtml = `
@@ -1009,9 +1016,9 @@ function renderHome() {
       </div>`;
   }
 
-  const manualBtn = `<button class="btn btn-outline" onclick="openAddEntry({})">✏️ הכנסה ידנית</button>`;
+  const manualBtn = `<button class="btn btn-outline" style="margin-bottom:12px" onclick="openAddEntry({})">✏️ הכנסה ידנית</button>`;
 
-  setHTML('home-content', activeHtml + noJobsHtml + homeScanHtml + todayHtml + recentHtml + manualBtn);
+  setHTML('home-content', activeHtml + noJobsHtml + homeScanHtml + manualBtn + todayHtml + recentHtml);
   if (S.activeSession) updateTimerDisplay();
 }
 
@@ -1033,18 +1040,19 @@ function renderReport() {
   }).join('');
 
   // Aggregate
-  let totalMins = 0, totalEarn = 0, regMins = 0, ot1Mins = 0, ot2Mins = 0;
+  let totalMins = 0, totalEarn = 0, totalDays = 0;
   const byJob = {};
+  const daysSet = new Set();
   S.entries.forEach(e => {
     totalMins += e.totalMins || 0;
     totalEarn += e.earnings || 0;
-    regMins   += e.regMins  || 0;
-    ot1Mins   += e.ot1Mins  || 0;
-    ot2Mins   += e.ot2Mins  || 0;
+    daysSet.add(e.date);
     if (!byJob[e.jobId]) byJob[e.jobId] = { name: e.jobName, color: e.jobColor, mins: 0, earn: 0 };
     byJob[e.jobId].mins += e.totalMins || 0;
     byJob[e.jobId].earn += e.earnings  || 0;
   });
+  totalDays = daysSet.size;
+  const avgHours = totalDays > 0 ? totalMins / totalDays : 0;
 
   const statsHtml = `
     <div class="stats-grid">
@@ -1057,12 +1065,12 @@ function renderReport() {
         <div class="stat-lbl">סה"כ הכנסה</div>
       </div>
       <div class="stat-card">
-        <div class="stat-val">${fmtMins(regMins)}</div>
-        <div class="stat-lbl">שעות רגילות</div>
+        <div class="stat-val">${totalDays}</div>
+        <div class="stat-lbl">ימי עבודה</div>
       </div>
-      <div class="stat-card warn">
-        <div class="stat-val">${fmtMins(ot1Mins + ot2Mins)}</div>
-        <div class="stat-lbl">שעות נוספות</div>
+      <div class="stat-card">
+        <div class="stat-val">${fmtMins(Math.round(avgHours))}</div>
+        <div class="stat-lbl">ממוצע ליום</div>
       </div>
     </div>`;
 
@@ -1107,7 +1115,6 @@ function renderReport() {
           <div class="dot sm" style="background:${e.jobColor||'#3b82f6'}"></div>
           <span>${e.jobName}: ${e.clockIn}–${e.clockOut}</span>
           <span class="se-earn">${fmtMoney(e.earnings||0)}</span>
-          ${(e.ot1Mins||0)+(e.ot2Mins||0)>0?'<span class="ot-badge">נוספות</span>':''}
         </div>`).join('');
       return `
         <div class="day-card">
@@ -1120,13 +1127,10 @@ function renderReport() {
     }).join('');
   }
 
-  const addEntryBtn = `<button class="btn btn-outline" onclick="openAddEntry({})">✏️ הוסף רשומה</button>`;
-
   setHTML('report-content',
     `<div class="month-sel" id="month-sel-row">${monthSel}</div>` +
     statsHtml + jobBreakHtml +
-    `<div class="card"><div class="card-title">📅 פירוט יומי</div>${dailyHtml}</div>` +
-    addEntryBtn
+    `<div class="card"><div class="card-title">📅 פירוט יומי</div>${dailyHtml}</div>`
   );
   // Scroll active month chip into view
   setTimeout(() => {
@@ -1148,10 +1152,15 @@ async function selectMonth(m, y) {
 function openAddEntry(prefill) {
   S.editEntry = null;
   qs('entry-modal-title').textContent = 'הוסף רשומה';
+  const defaultJobId = prefill.jobId || (S.jobs[0] ? S.jobs[0].id : '');
   const jobOpts = S.jobs.map(j =>
-    `<option value="${j.id}" ${prefill.jobId===j.id?'selected':''}>${j.name}</option>`).join('');
-  setHTML('entry-job', `<option value="">בחר עבודה...</option>${jobOpts}`);
-  qs('entry-date').value  = prefill.date  || fmtDateISO(new Date());
+    `<option value="${j.id}" ${j.id===defaultJobId?'selected':''}>${j.name}</option>`).join('');
+  setHTML('entry-job', jobOpts);
+  const initDateISO = prefill.date || fmtDateISO(new Date());
+  const displayEl = qs('entry-date-display');
+  const hiddenEl  = qs('entry-date');
+  if (displayEl) displayEl.value = fmtDateDisplay(initDateISO);
+  if (hiddenEl)  hiddenEl.value  = initDateISO;
   qs('entry-in').value    = prefill.clockIn  || '';
   qs('entry-out').value   = prefill.clockOut || '';
   qs('entry-notes').value = prefill.notes || '';
@@ -1167,8 +1176,11 @@ function openEditEntry(entryId) {
   qs('entry-modal-title').textContent = 'ערוך רשומה';
   const jobOpts = S.jobs.map(j =>
     `<option value="${j.id}" ${j.id===e.jobId?'selected':''}>${j.name}</option>`).join('');
-  setHTML('entry-job', `<option value="">בחר עבודה...</option>${jobOpts}`);
-  qs('entry-date').value  = e.date;
+  setHTML('entry-job', jobOpts);
+  const displayEl2 = qs('entry-date-display');
+  const hiddenEl2  = qs('entry-date');
+  if (displayEl2) displayEl2.value = fmtDateDisplay(e.date);
+  if (hiddenEl2)  hiddenEl2.value  = e.date;
   qs('entry-in').value    = e.clockIn;
   qs('entry-out').value   = e.clockOut;
   qs('entry-notes').value = e.notes || '';
@@ -1198,11 +1210,7 @@ function updateEntryCalc() {
   const rate = job.hourlyRate || 0;
   const ec   = calcEarnings(totalMins, rate);
   let html = `<div class="calc-box">
-    <div class="calc-row"><span>סה"כ שעות</span><strong>${fmtMins(totalMins)}</strong></div>`;
-  if (ec.ot1Mins > 0)
-    html += `<div class="calc-row ot"><span>שעות נוספות 125%</span><strong>${fmtMins(ec.ot1Mins)}</strong></div>`;
-  if (ec.ot2Mins > 0)
-    html += `<div class="calc-row ot"><span>שעות נוספות 150%</span><strong>${fmtMins(ec.ot2Mins)}</strong></div>`;
+    <div class="calc-row"><span>⏱ סה"כ שעות</span><strong>${fmtMins(totalMins)}</strong></div>`;
   if (rate > 0)
     html += `<div class="calc-row earn"><span>💰 הכנסה</span><strong>${fmtMoney(ec.earnings)}</strong></div>`;
   html += '</div>';
@@ -1227,8 +1235,7 @@ async function saveEntryFromModal() {
   const entry = {
     jobId, jobName: job.name, jobColor: job.color,
     date: dateStr, clockIn: inStr, clockOut: outStr,
-    totalMins: ec.totalMins, regMins: ec.regMins,
-    ot1Mins: ec.ot1Mins, ot2Mins: ec.ot2Mins,
+    totalMins: ec.totalMins,
     earnings: ec.earnings, hourlyRate: job.hourlyRate || 0, notes
   };
   if (S.editEntry) entry.id = S.editEntry.id;
@@ -1372,16 +1379,6 @@ function renderSettings() {
       </div>
       <div class="info-note" style="margin-bottom:10px">המפתח נשמר במכשיר בלבד ולא מועלה לשרת</div>
       <button class="btn btn-primary" onclick="saveApiKey()">💾 שמור מפתח</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">⚖️ חוקי שעות נוספות (ישראל)</div>
-      <div class="ot-rules">
-        <div class="ot-rule"><span>שעות 1–8</span><strong>100%</strong></div>
-        <div class="ot-rule"><span>שעות 9–10</span><strong>125%</strong></div>
-        <div class="ot-rule"><span>שעה 11 ומעלה</span><strong>150%</strong></div>
-      </div>
-      <div class="info-note">חישוב שעות נוספות הוא לפי עבודה ביום — לא מצטבר בין עבודות שונות</div>
     </div>
 
     <div class="card">
@@ -1530,18 +1527,21 @@ async function homeProcessScan(b64, mime) {
     const result = await analyzeWithClaude(b64, mime);
     // Render result inline in home
     const confMap = { high: '✅ גבוהה', medium: '⚠️ בינונית', low: '❌ נמוכה' };
-    const jobOpts = S.jobs.map(j => `<option value="${j.id}">${j.name}</option>`).join('');
+    const defJobId = S.jobs[0] ? S.jobs[0].id : '';
+    const jobOpts = S.jobs.map(j => `<option value="${j.id}" ${j.id===defJobId?'selected':''}>${j.name}</option>`).join('');
+    const today4 = fmtDateISO(new Date());
     setHTML('home-scan-result', `
       <div style="margin-top:8px">
         <div style="font-size:13px;color:var(--text3);margin-bottom:10px">דיוק: ${confMap[result.confidence]||'-'}</div>
         <div class="two-col">
           <div class="form-group">
-            <label class="form-label">תאריך</label>
-            <input type="date" class="form-input" id="hsr-date" value="${result.date||fmtDateISO(new Date())}">
+            <label class="form-label">תאריך (DD/MM/YYYY)</label>
+            <input type="text" class="form-input" id="hsr-date" placeholder="31/12/2026" maxlength="10" inputmode="numeric"
+              value="${result.date ? fmtDateDisplay(result.date) : fmtDateDisplay(today4)}">
           </div>
           <div class="form-group">
             <label class="form-label">עבודה</label>
-            <select class="form-input" id="hsr-job"><option value="">בחר...</option>${jobOpts}</select>
+            <select class="form-input" id="hsr-job">${jobOpts}</select>
           </div>
         </div>
         <div class="two-col">
@@ -1562,7 +1562,8 @@ async function homeProcessScan(b64, mime) {
 }
 
 function homeApplyScan() {
-  const date     = qs('hsr-date')?.value;
+  const dateRaw  = qs('hsr-date')?.value;
+  const date     = parseScanDate(dateRaw);
   const clockIn  = qs('hsr-in')?.value;
   const clockOut = qs('hsr-out')?.value;
   const jobId    = qs('hsr-job')?.value;
@@ -1681,8 +1682,10 @@ async function analyzeWithClaude(b64, mime) {
 
 function renderScanResult(result) {
   const confMap = { high: '✅ גבוהה', medium: '⚠️ בינונית', low: '❌ נמוכה' };
+  const defJob = S.jobs[0] ? S.jobs[0].id : '';
   const jobOpts = S.jobs.map(j =>
-    `<option value="${j.id}">${j.name}</option>`).join('');
+    `<option value="${j.id}" ${j.id===defJob?'selected':''}>${j.name}</option>`).join('');
+  const todaySR = fmtDateISO(new Date());
 
   setHTML('scan-result-area', `
     <div class="scan-success">
@@ -1691,8 +1694,9 @@ function renderScanResult(result) {
       ${result.notes ? `<div style="font-size:12px;color:var(--text3);margin-bottom:12px">הערה: ${result.notes}</div>` : ''}
 
       <div class="form-group">
-        <label class="form-label">תאריך</label>
-        <input type="date" class="form-input" id="sr-date" value="${result.date || fmtDateISO(new Date())}">
+        <label class="form-label">תאריך (DD/MM/YYYY)</label>
+        <input type="text" class="form-input" id="sr-date" placeholder="31/12/2026" maxlength="10" inputmode="numeric"
+          value="${result.date ? fmtDateDisplay(result.date) : fmtDateDisplay(todaySR)}">
       </div>
       <div class="two-col">
         <div class="form-group">
@@ -1706,20 +1710,18 @@ function renderScanResult(result) {
       </div>
       <div class="form-group">
         <label class="form-label">עבודה</label>
-        <select class="form-input" id="sr-job">
-          <option value="">בחר עבודה...</option>
-          ${jobOpts}
-        </select>
+        <select class="form-input" id="sr-job">${jobOpts}</select>
       </div>
       <button class="btn btn-primary" onclick="applyScanResult()">💾 שמור רשומה</button>
     </div>`);
 }
 
 function applyScanResult() {
-  const date    = qs('sr-date')?.value;
-  const clockIn = qs('sr-in')?.value;
-  const clockOut= qs('sr-out')?.value;
-  const jobId   = qs('sr-job')?.value;
+  const dateRaw  = qs('sr-date')?.value;
+  const date     = parseScanDate(dateRaw);
+  const clockIn  = qs('sr-in')?.value;
+  const clockOut = qs('sr-out')?.value;
+  const jobId    = qs('sr-job')?.value;
   if (!jobId) { toast('בחר עבודה', true); return; }
   openAddEntry({ date, clockIn, clockOut, jobId });
   setHTML('scan-result-area', '');
