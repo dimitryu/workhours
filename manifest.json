@@ -2,15 +2,18 @@
   "name": "WorkHours - ניהול שעות",
   "short_name": "WorkHours",
   "description": "ניהול שעות עבודה ותשלומים",
+  "version": "1.2.0",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#1d4ed8",
-  "theme_color": "#1d4ed8",
+  "background_color": "#1034a6",
+  "theme_color": "#1034a6",
   "lang": "he",
   "dir": "rtl",
   "orientation": "portrait-primary",
   "icons": [
+    {"src": "icons/favicon-16.png","sizes": "16x16","type": "image/png"},
+    {"src": "icons/favicon-32.png","sizes": "32x32","type": "image/png"},
     {"src": "icons/icon-192.png","sizes": "192x192","type": "image/png","purpose": "any maskable"},
     {"src": "icons/icon-512.png","sizes": "512x512","type": "image/png","purpose": "any maskable"}
   ]

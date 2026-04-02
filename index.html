@@ -235,10 +235,110 @@ select.form-input{cursor:pointer}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sep{height:1px;background:var(--border);margin:12px 0}
 .text-center{text-align:center}
+
+/* ──── DARK MODE ──── */
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#475569;--border:#334155;--shadow:0 1px 8px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04)}}
+[data-theme="dark"]{--bg:#0f172a;--card:#1e293b;--text:#f1f5f9;--text2:#94a3b8;--text3:#475569;--border:#334155;--shadow:0 1px 8px rgba(0,0,0,.3),0 0 0 1px rgba(255,255,255,.04)}
+[data-theme="light"]{--bg:#eef2ff;--card:#fff;--text:#0f172a;--text2:#475569;--text3:#94a3b8;--border:#e2e8f0;--shadow:0 1px 8px rgba(0,0,0,.08),0 0 0 1px rgba(0,0,0,.04)}
+
+/* ──── SKELETON ──── */
+.skel{background:linear-gradient(90deg,var(--border) 25%,var(--bg) 50%,var(--border) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px}
+.skel-line{height:13px;margin-bottom:8px}.skel-line.w60{width:60%}.skel-line.w40{width:40%}
+.skel-block{height:72px;margin-bottom:10px}.skel-stat{height:68px;border-radius:12px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ──── SCREEN TRANSITIONS ──── */
+@keyframes scr-in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+.screen-entering{animation:scr-in .18s ease forwards}
+
+/* ──── EARNINGS ANIMATION ──── */
+#earn-overlay{position:fixed;inset:0;background:linear-gradient(135deg,var(--green),#047857);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:250;gap:6px}
+#earn-overlay.show{display:flex}
+#earn-overlay .ea-inner{animation:earnPop .4s cubic-bezier(.34,1.56,.64,1) both;text-align:center}
+@keyframes earnPop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
+.ea-icon{font-size:64px;animation:eaBounce .6s ease .1s both}
+@keyframes eaBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+.ea-amount{font-size:52px;font-weight:800;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,.2);margin:4px 0}
+.ea-sub{font-size:17px;color:rgba(255,255,255,.85);font-weight:600}
+.ea-job{font-size:13px;color:rgba(255,255,255,.65);margin-top:2px}
+.ea-tap{font-size:11px;color:rgba(255,255,255,.5);margin-top:20px}
+
+/* ──── WEEK MINI-BARS ──── */
+.week-bars{display:flex;align-items:flex-end;gap:3px;height:44px;margin:10px 0 4px}
+.wb{display:flex;flex-direction:column;align-items:center;flex:1}
+.wb-fill{width:100%;border-radius:3px 3px 0 0;min-height:2px}
+.wb-lbl{font-size:8px;color:var(--text3);margin-top:2px;font-weight:600}
+.wb.today .wb-fill{outline:2px solid var(--blue);outline-offset:1px}
+.wb.today .wb-lbl{color:var(--blue);font-weight:800}
+
+/* ──── CHART ──── */
+.chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;cursor:grab;margin:0 -14px;padding:0 14px 6px}
+.chart-scroll::-webkit-scrollbar{height:3px}
+.chart-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.chart-legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.cl-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2);font-weight:500}
+.cl-dot{width:8px;height:8px;border-radius:50%}
+
+/* ──── SCAN QUEUE ──── */
+.sq-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.sq-item{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:10px;padding:8px 10px}
+.sq-thumb{width:44px;height:34px;object-fit:cover;border-radius:6px;flex-shrink:0}
+.sq-info{flex:1;min-width:0}.sq-name{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sq-state{font-size:10px;font-weight:700}.sq-state.ok{color:var(--green)}.sq-state.pending{color:var(--amber)}.sq-state.err{color:var(--red)}
+.sq-rm{width:22px;height:22px;border-radius:50%;border:none;background:var(--border);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+
+/* ──── REPORT ACTIONS ──── */
+.rpt-acts{display:flex;gap:8px;margin-bottom:12px}
+.ra{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:10px 6px;border-radius:10px;border:2px solid var(--border);background:var(--card);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;font-family:inherit;transition:border-color .15s}
+.ra:active,.ra:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ──── TIME PICKER ──── */
+#tp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:150;display:none;align-items:flex-end;justify-content:center}
+#tp-overlay.active{display:flex}
+.tp-box{background:var(--card);border-radius:22px 22px 0 0;padding:18px;width:100%;max-width:480px}
+.tp-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tp-hdr-title{font-size:16px;font-weight:700}
+.tp-display{font-size:42px;font-weight:700;color:var(--blue);text-align:center;letter-spacing:6px;margin:6px 0 14px;font-variant-numeric:tabular-nums}
+.tp-cols{display:flex;gap:20px;justify-content:center;margin-bottom:16px}
+.tp-col{display:flex;flex-direction:column;align-items:center}
+.tp-col-lbl{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.tp-scrl{height:176px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;width:72px;border-radius:12px;background:var(--bg);scrollbar-width:none}
+.tp-scrl::-webkit-scrollbar{display:none}
+.tp-item{height:44px;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:var(--text3);cursor:pointer}
+.tp-item.sel{color:var(--blue);font-size:26px;font-weight:700}
+.tp-pad{height:66px;flex-shrink:0}
+
+/* ──── DARK TOGGLE ──── */
+.dm-btn{width:30px;height:30px;border-radius:50%;border:none;background:rgba(255,255,255,.15);color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+
+/* ──── COPY DAY ──── */
+.copy-day-btn{font-size:10px;padding:3px 8px;border-radius:6px;border:1.5px solid var(--border);background:var(--card);color:var(--text2);font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+.copy-day-btn:active{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ──── OFFLINE INDICATOR ──── */
+.offline-bar{background:#f59e0b;color:#fff;font-size:11px;font-weight:700;text-align:center;padding:4px;display:none}
+.offline-bar.show{display:block}
+
+/* ──── PRINT ──── */
+@media print{.header,.bottom-nav,.rpt-acts,.month-sel,.btn,.modal-overlay,#earn-overlay,#loading-overlay,#toast,.copy-day-btn{display:none!important}
+#app{max-width:100%}.main-screen{display:block!important;overflow:visible!important;height:auto!important;padding:8px!important}
+#report-screen{display:block!important}body,#app{background:#fff!important}
+.card,.stat-card,.day-card{box-shadow:none!important;border:1px solid #ddd!important}}
+
 </style>
 </head>
 <body>
 
+<div class="offline-bar" id="offline-bar">⚠️ מצב אופליין — שינויים יסונכרנו כשיחזור האינטרנט</div>
+<div id="earn-overlay" onclick="hideEarnings()">
+  <div class="ea-inner">
+    <div class="ea-icon">💰</div>
+    <div class="ea-amount" id="ea-amount">₪0</div>
+    <div class="ea-sub" id="ea-sub"></div>
+    <div class="ea-job" id="ea-job"></div>
+    <div class="ea-tap">לחץ לסגירה</div>
+  </div>
+</div>
 <!-- LOADING OVERLAY -->
 <div id="loading-overlay">
   <div class="spinner dark"></div>
@@ -254,7 +354,7 @@ select.form-input{cursor:pointer}
     <div class="auth-logo-icon">⏱</div>
     <div class="auth-logo-title">WorkHours</div>
     <div class="auth-logo-sub">ניהול שעות עבודה</div>
-    <div class="auth-version">v1.1.0</div>
+    <div class="auth-version">v1.2.0</div>
   </div>
 
   <div class="auth-card">
@@ -307,10 +407,11 @@ select.form-input{cursor:pointer}
     <div class="header-brand">
       <span class="header-logo">⏱</span>
       <span class="header-title">WorkHours</span>
-      <span class="version-badge">v1.1.0</span>
+      <span class="version-badge">v1.2.0</span>
     </div>
     <div class="header-user">
       <span class="user-name-hdr" id="user-name-hdr"></span>
+      <button class="dm-btn" id="dm-btn" onclick="toggleDark()" title="מצב כהה">🌙</button>
       <div class="hdr-avatar" id="hdr-avatar" onclick="showScreen('settings')">?</div>
     </div>
   </div>
@@ -378,11 +479,11 @@ select.form-input{cursor:pointer}
     <div class="two-col">
       <div class="form-group">
         <label class="form-label">כניסה</label>
-        <input type="time" class="form-input" id="entry-in" onchange="updateEntryCalc()">
+        <input type="time" class="form-input" id="entry-in" onchange="updateEntryCalc()" onclick="openTp('entry-in','שעת כניסה')" readonly style="cursor:pointer">
       </div>
       <div class="form-group">
         <label class="form-label">יציאה</label>
-        <input type="time" class="form-input" id="entry-out" onchange="updateEntryCalc()">
+        <input type="time" class="form-input" id="entry-out" onchange="updateEntryCalc()" onclick="openTp('entry-out','שעת יציאה')" readonly style="cursor:pointer">
       </div>
     </div>
     <div class="form-group">
@@ -439,15 +540,1659 @@ select.form-input{cursor:pointer}
 </div>
 
 <!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js">
+// ═══════════════════════════════════════════════════════════
+//  DARK MODE
+// ═══════════════════════════════════════════════════════════
+function darkModeInit() {
+  const saved = localStorage.getItem('wh_dark');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  updateDarkBtn();
+}
+
+function toggleDark() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('wh_dark', next);
+  updateDarkBtn();
+}
+
+function getDarkLabel() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  return isDark ? '🌙 כהה' : '☀️ בהיר';
+}
+
+function updateDarkBtn() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const hdrBtn = qs('dm-btn');
+  if (hdrBtn) hdrBtn.textContent = isDark ? '☀️' : '🌙';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HAPTIC FEEDBACK
+// ═══════════════════════════════════════════════════════════
+function haptic(type = 'light') {
+  if (!navigator.vibrate) return;
+  const p = { light: 30, medium: 50, heavy: [50, 30, 80] };
+  navigator.vibrate(p[type] || 30);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EARNINGS ANIMATION
+// ═══════════════════════════════════════════════════════════
+function showEarnings(amount, totalMins, jobName) {
+  qs('ea-amount').textContent = fmtMoney(amount);
+  qs('ea-sub').textContent = fmtMins(totalMins) + ' שעות עבודה';
+  qs('ea-job').textContent = jobName || '';
+  const ov = qs('earn-overlay');
+  ov.classList.add('show');
+  // Auto-hide after 3s
+  setTimeout(() => hideEarnings(), 3500);
+}
+
+function hideEarnings() {
+  qs('earn-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SKELETON LOADING
+// ═══════════════════════════════════════════════════════════
+function skeletonHome() {
+  setHTML('home-content', `
+    <div class="card"><div class="skel skel-block"></div></div>
+    <div class="card">
+      <div class="skel skel-line"></div>
+      <div class="skel skel-line w60"></div>
+      <div class="skel skel-line w40"></div>
+    </div>
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+      </div>
+    </div>`);
+}
+
+function skeletonReport() {
+  const skRows = Array(5).fill('<div class="skel skel-line"></div>').join('');
+  setHTML('report-content', `
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      ${Array(6).fill('<div class="skel skel-line" style="width:60px;height:32px;flex-shrink:0"></div>').join('')}
+    </div>
+    <div class="stats-grid">
+      ${Array(4).fill('<div class="stat-card"><div class="skel skel-stat"></div></div>').join('')}
+    </div>
+    <div class="card">${skRows}</div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WEEK SUMMARY
+// ═══════════════════════════════════════════════════════════
+function renderWeekSummary() {
+  const days = [];
+  const today = new Date();
+  let weekMins = 0, weekEarn = 0;
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const iso = fmtDateISO(d);
+    const dayEntries = S.entries.filter(e => e.date === iso);
+    const mins = dayEntries.reduce((s, e) => s + (e.totalMins || 0), 0);
+    const earn = dayEntries.reduce((s, e) => s + (e.earnings || 0), 0);
+    weekMins += mins;
+    weekEarn += earn;
+    days.push({ d, iso, mins, earn, isToday: i === 0 });
+  }
+
+  const maxMins = Math.max(...days.map(d => d.mins), 480);
+  const labels = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+
+  const bars = days.map(({ d, mins, isToday }) => {
+    const pct = Math.max(mins > 0 ? 6 : 0, Math.round((mins / maxMins) * 100));
+    const color = mins > 0 ? (S.jobs[0]?.color || 'var(--blue)') : 'var(--border)';
+    const lbl = labels[d.getDay()];
+    return `<div class="wb${isToday ? ' today' : ''}">
+      <div class="wb-fill" style="height:${pct}%;background:${color}"></div>
+      <div class="wb-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📆 השבוע</div>
+        <div class="card-sub">${fmtMins(weekMins)} | ${fmtMoney(weekEarn)}</div>
+      </div>
+      <div class="week-bars">${bars}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BAR CHART
+// ═══════════════════════════════════════════════════════════
+function renderBarChart(entries, year, month) {
+  if (entries.length === 0) return '';
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const byDay = {};
+  entries.forEach(e => {
+    const day = parseInt(e.date.split('-')[2]);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+
+  const maxMins = Math.max(...Object.values(byDay).map(d => d.reduce((s, e) => s + e.totalMins, 0)), 480);
+  const BW = 16, GAP = 3, ML = 28, MR = 8, MT = 8, MB = 20;
+  const chartW = daysInMonth * (BW + GAP) + ML + MR;
+  const chartH = 110 + MB;
+  const innerH = chartH - MT - MB;
+
+  // Y axis labels
+  const yLabels = [0, 4, 8].map(h => {
+    const y = MT + innerH - (h / (maxMins / 60)) * innerH;
+    return `<text x="${ML - 4}" y="${y + 4}" font-size="8" fill="var(--text3)" text-anchor="end">${h}h</text>
+            <line x1="${ML}" y1="${y}" x2="${chartW - MR}" y2="${y}" stroke="var(--border)" stroke-width=".5" stroke-dasharray="3,3"/>`;
+  }).join('');
+
+  let bars = '';
+  const jobColors = {};
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayData = byDay[day];
+    if (!dayData) continue;
+    const x = ML + (day - 1) * (BW + GAP);
+    let stackY = MT + innerH;
+    dayData.forEach(e => {
+      const h = (e.totalMins || 0) / maxMins * innerH;
+      if (h < 0.5) return;
+      stackY -= h;
+      const col = e.jobColor || '#3b82f6';
+      jobColors[e.jobId] = { color: col, name: e.jobName };
+      bars += `<rect x="${x}" y="${stackY.toFixed(1)}" width="${BW}" height="${h.toFixed(1)}" fill="${col}" rx="2"/>`;
+    });
+    if (day === 1 || day % 5 === 0 || day === daysInMonth) {
+      bars += `<text x="${x + BW / 2}" y="${chartH - 4}" font-size="8" fill="var(--text3)" text-anchor="middle">${day}</text>`;
+    }
+  }
+
+  const legend = Object.values(jobColors).map(j =>
+    `<div class="cl-item"><div class="cl-dot" style="background:${j.color}"></div>${j.name}</div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title">📈 גרף שעות לפי יום</div>
+      <div class="chart-scroll" id="chart-wrap">
+        <svg width="${chartW}" height="${chartH}" style="display:block">
+          <line x1="${ML}" y1="${MT}" x2="${ML}" y2="${MT + innerH}" stroke="var(--border)" stroke-width="1"/>
+          ${yLabels}${bars}
+        </svg>
+      </div>
+      ${legend ? `<div class="chart-legend">${legend}</div>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COPY DAY
+// ═══════════════════════════════════════════════════════════
+function copyDay(fromDate) {
+  const dayEntries = S.entries.filter(e => e.date === fromDate);
+  if (dayEntries.length === 0) { toast('אין רשומות ביום זה', true); return; }
+  const today = fmtDateISO(new Date());
+  // Open entry modal for each (only first for simplicity, user can add more)
+  const e = dayEntries[0];
+  openAddEntry({ date: today, clockIn: e.clockIn, clockOut: e.clockOut, jobId: e.jobId });
+  toast(`📋 הועתק מ-${fmtDateDisplay(fromDate)}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ═══════════════════════════════════════════════════════════
+function exportCSV() {
+  if (S.entries.length === 0) { toast('אין רשומות לייצוא', true); return; }
+  const rows = [
+    ['תאריך', 'עבודה', 'כניסה', 'יציאה', 'שעות', 'הכנסה (₪)'],
+    ...S.entries.map(e => [
+      fmtDateDisplay(e.date), e.jobName, e.clockIn, e.clockOut,
+      (e.totalMins / 60).toFixed(2), (e.earnings || 0).toFixed(2)
+    ])
+  ];
+  // Totals row
+  const totalH = S.entries.reduce((s, e) => s + e.totalMins, 0) / 60;
+  const totalE = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  rows.push(['', 'סה"כ', '', '', totalH.toFixed(2), totalE.toFixed(2)]);
+
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workhours_${HE_MONTHS[S.month]}_${S.year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 קובץ CSV הורד!');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRINT / PDF
+// ═══════════════════════════════════════════════════════════
+function printReport() {
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SHARE REPORT
+// ═══════════════════════════════════════════════════════════
+async function shareReport() {
+  const totalMins = S.entries.reduce((s, e) => s + e.totalMins, 0);
+  const totalEarn = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  const days = new Set(S.entries.map(e => e.date)).size;
+  const text = `דוח WorkHours — ${HE_MONTHS[S.month]} ${S.year}\n` +
+    `ימי עבודה: ${days}\n` +
+    `סה"כ שעות: ${fmtMins(totalMins)}\n` +
+    `סה"כ הכנסה: ${fmtMoney(totalEarn)}\n` +
+    `ממוצע ליום: ${fmtMins(days > 0 ? Math.round(totalMins / days) : 0)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'דוח WorkHours', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast('📋 הדוח הועתק ללוח!');
+    }
+  } catch (e) {
+    toast('שגיאה בשיתוף', true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REMINDER (clock-in too long)
+// ═══════════════════════════════════════════════════════════
+let _reminderTimer = null;
+function startReminder() {
+  stopReminder();
+  _reminderTimer = setInterval(() => {
+    if (!S.activeSession) { stopReminder(); return; }
+    const elapsed = (Date.now() - new Date(S.activeSession.clockIn)) / 3600000;
+    if (elapsed >= 10) {
+      haptic('medium');
+      if (Notification.permission === 'granted') {
+        new Notification('WorkHours ⏰', {
+          body: `שכחת לצאת מ-${S.activeSession.jobName}? עבדת כבר ${Math.floor(elapsed)} שעות.`,
+          icon: 'icons/icon-192.png'
+        });
+      } else {
+        toast(`⏰ שכחת לצאת? עבדת ${Math.floor(elapsed)} שעות ב-${S.activeSession.jobName}`, false);
+      }
+      stopReminder(); // Only alert once
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
+
+  // Request notification permission quietly
+  if (Notification && Notification.permission === 'default') {
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function stopReminder() {
+  if (_reminderTimer) { clearInterval(_reminderTimer); _reminderTimer = null; }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OFFLINE CACHE
+// ═══════════════════════════════════════════════════════════
+const CACHE_PFX = 'wh_cache_';
+
+function cacheEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  localStorage.setItem(key, JSON.stringify(S.entries));
+}
+
+function loadCachedEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  const raw = localStorage.getItem(key);
+  if (raw) { S.entries = JSON.parse(raw); return true; }
+  return false;
+}
+
+function watchOffline() {
+  const bar = qs('offline-bar');
+  window.addEventListener('online', () => { if (bar) bar.classList.remove('show'); });
+  window.addEventListener('offline', () => { if (bar) bar.classList.add('show'); });
+  if (!navigator.onLine && bar) bar.classList.add('show');
+}
+
+// Wrap loadEntries to use cache
+const _origLoadEntries = loadEntries;
+loadEntries = async function() {
+  if (!navigator.onLine) {
+    loadCachedEntries();
+    return;
+  }
+  await _origLoadEntries();
+  cacheEntries();
+};
+
+// ═══════════════════════════════════════════════════════════
+//  TIME PICKER
+// ═══════════════════════════════════════════════════════════
+let _tpField = null;
+
+function openTp(fieldId, title) {
+  _tpField = fieldId;
+  qs('tp-title').textContent = title || 'בחר שעה';
+  const cur = qs(fieldId)?.value || '';
+  const [hh, mm] = cur ? cur.split(':') : [new Date().getHours().toString().padStart(2,'0'), '00'];
+
+  // Build hour items 00-23
+  let hHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 24; i++) {
+    const v = String(i).padStart(2,'0');
+    hHtml += `<div class="tp-item${v===hh?' sel':''}" data-v="${v}" onclick="tpSel(this,'h')">${v}</div>`;
+  }
+  hHtml += '<div class="tp-pad"></div>';
+
+  // Build minute items 00-59
+  let mHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 60; i++) {
+    const v = String(i).padStart(2,'0');
+    mHtml += `<div class="tp-item${v===mm?' sel':''}" data-v="${v}" onclick="tpSel(this,'m')">${v}</div>`;
+  }
+  mHtml += '<div class="tp-pad"></div>';
+
+  setHTML('tp-h', hHtml);
+  setHTML('tp-m', mHtml);
+
+  // Scroll to selected
+  setTimeout(() => {
+    const selH = qs('tp-h').querySelector('.sel');
+    const selM = qs('tp-m').querySelector('.sel');
+    if (selH) selH.scrollIntoView({ block: 'center' });
+    if (selM) selM.scrollIntoView({ block: 'center' });
+    tpUpdateDisplay();
+  }, 30);
+
+  qs('tp-overlay').classList.add('active');
+}
+
+function tpSel(el, col) {
+  const container = qs(col === 'h' ? 'tp-h' : 'tp-m');
+  container.querySelectorAll('.tp-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  tpUpdateDisplay();
+}
+
+function tpUpdateDisplay() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  const h = hEl?.dataset.v || '00';
+  const m = mEl?.dataset.v || '00';
+  qs('tp-disp').textContent = `${h}:${m}`;
+}
+
+function applyTp() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  if (_tpField && hEl && mEl) {
+    const val = `${hEl.dataset.v}:${mEl.dataset.v}`;
+    const field = qs(_tpField);
+    if (field) { field.value = val; updateEntryCalc(); }
+  }
+  closeTp();
+}
+
+function closeTp() {
+  qs('tp-overlay').classList.remove('active');
+  _tpField = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MULTIPLE SCAN QUEUE
+// ═══════════════════════════════════════════════════════════
+let _scanQueue = [];
+
+async function handleMultiScan(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const dataUrl = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(file);
+    });
+    _scanQueue.push({ file, dataUrl, b64: dataUrl.split(',')[1], mime: file.type, status: 'pending', result: null });
+  }
+  renderScanQueue();
+  // Auto process
+  await processScanQueue();
+}
+
+function renderScanQueue() {
+  if (_scanQueue.length === 0) { setHTML('home-scan-queue', ''); return; }
+  const items = _scanQueue.map((item, i) => {
+    const statusMap = { pending: '⏳ ממתין', processing: '🔄 מעבד...', ok: '✅ זוהה', err: '❌ שגיאה' };
+    const cls = item.status === 'ok' ? 'ok' : item.status === 'err' ? 'err' : 'pending';
+    const dateDisp = item.result?.date ? fmtDateDisplay(item.result.date) : '';
+    const timeDisp = item.result ? `${item.result.clockIn||'?'}–${item.result.clockOut||'?'}` : '';
+    return `<div class="sq-item">
+      <img class="sq-thumb" src="${item.dataUrl}" alt="תלוש ${i+1}">
+      <div class="sq-info">
+        <div class="sq-name">תלוש ${i+1}</div>
+        <div class="sq-state ${cls}">${statusMap[item.status]||item.status}</div>
+        ${dateDisp ? `<div class="sq-date">${dateDisp} ${timeDisp}</div>` : ''}
+      </div>
+      ${item.status === 'ok' ? `<button class="btn-icon" style="font-size:11px" onclick="applyScanQueueItem(${i})">שמור</button>` : ''}
+      <button class="sq-rm" onclick="removeScanQueueItem(${i})">✕</button>
+    </div>`;
+  }).join('');
+  setHTML('home-scan-queue', `<div class="sq-list">${items}</div>`);
+}
+
+async function processScanQueue() {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  if (!apiKey) { toast('הוסף מפתח API בהגדרות', true); return; }
+  for (let i = 0; i < _scanQueue.length; i++) {
+    if (_scanQueue[i].status !== 'pending') continue;
+    _scanQueue[i].status = 'processing';
+    renderScanQueue();
+    try {
+      _scanQueue[i].result = await analyzeWithClaude(_scanQueue[i].b64, _scanQueue[i].mime);
+      _scanQueue[i].status = 'ok';
+    } catch (e) {
+      _scanQueue[i].status = 'err';
+      _scanQueue[i].error = e.message;
+    }
+    renderScanQueue();
+  }
+  const ok = _scanQueue.filter(i => i.status === 'ok').length;
+  toast(`✅ עיבוד הסתיים: ${ok}/${_scanQueue.length} תלושים זוהו`);
+}
+
+function applyScanQueueItem(idx) {
+  const item = _scanQueue[idx];
+  if (!item?.result) return;
+  const date = item.result.date;
+  const defJobId = S.jobs[0]?.id || '';
+  // Find job by name if Claude returned one
+  let jobId = defJobId;
+  if (item.result.jobName) {
+    const match = S.jobs.find(j => j.name.includes(item.result.jobName) || item.result.jobName.includes(j.name));
+    if (match) jobId = match.id;
+  }
+  openAddEntry({ date, clockIn: item.result.clockIn, clockOut: item.result.clockOut, jobId });
+  removeScanQueueItem(idx);
+}
+
+function removeScanQueueItem(idx) {
+  _scanQueue.splice(idx, 1);
+  renderScanQueue();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENHANCED analyzeWithClaude (auto job detection)
+// ═══════════════════════════════════════════════════════════
+async function analyzeWithClaude(b64, mime) {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  const jobNames = S.jobs.map(j => j.name).join(', ');
+  const prompt = `נתח את תלוש העבודה. חלץ:
+- תאריך העבודה
+- שעת כניסה
+- שעת יציאה
+${jobNames ? `- שם מקום העבודה (בדוק אם תואם לאחת מ: ${jobNames})` : ''}
+
+החזר JSON בלבד, ללא markdown:
+{"date":"YYYY-MM-DD","clockIn":"HH:MM","clockOut":"HH:MM","confidence":"high/medium/low","notes":"","jobName":"שם אם זוהה או null"}
+
+אם לא ניתן לחלץ נתון, השתמש ב-null. תאריך היום: ${fmtDateISO(new Date())}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-5',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+        { type: 'text', text: prompt }
+      ]}]
+    })
+  });
+
+  if (!resp.ok) {
+    let errMsg = `שגיאת שרת ${resp.status}`;
+    try { const eb = await resp.json(); errMsg = eb.error?.message || errMsg; } catch (_) {}
+    throw new Error(errMsg);
+  }
+  const data = await resp.json();
+  const text = data.content[0].text.replace(/```json|```/g, '').trim();
+  return JSON.parse(text);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT ADDITIONS (called from window.load)
+// ═══════════════════════════════════════════════════════════
+function appExtrasInit() {
+  darkModeInit();
+  watchOffline();
+  // Resume reminder if session was active
+  if (S.activeSession) startReminder();
+}
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js">
+// ═══════════════════════════════════════════════════════════
+//  DARK MODE
+// ═══════════════════════════════════════════════════════════
+function darkModeInit() {
+  const saved = localStorage.getItem('wh_dark');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  updateDarkBtn();
+}
+
+function toggleDark() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('wh_dark', next);
+  updateDarkBtn();
+}
+
+function getDarkLabel() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  return isDark ? '🌙 כהה' : '☀️ בהיר';
+}
+
+function updateDarkBtn() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const hdrBtn = qs('dm-btn');
+  if (hdrBtn) hdrBtn.textContent = isDark ? '☀️' : '🌙';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HAPTIC FEEDBACK
+// ═══════════════════════════════════════════════════════════
+function haptic(type = 'light') {
+  if (!navigator.vibrate) return;
+  const p = { light: 30, medium: 50, heavy: [50, 30, 80] };
+  navigator.vibrate(p[type] || 30);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EARNINGS ANIMATION
+// ═══════════════════════════════════════════════════════════
+function showEarnings(amount, totalMins, jobName) {
+  qs('ea-amount').textContent = fmtMoney(amount);
+  qs('ea-sub').textContent = fmtMins(totalMins) + ' שעות עבודה';
+  qs('ea-job').textContent = jobName || '';
+  const ov = qs('earn-overlay');
+  ov.classList.add('show');
+  // Auto-hide after 3s
+  setTimeout(() => hideEarnings(), 3500);
+}
+
+function hideEarnings() {
+  qs('earn-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SKELETON LOADING
+// ═══════════════════════════════════════════════════════════
+function skeletonHome() {
+  setHTML('home-content', `
+    <div class="card"><div class="skel skel-block"></div></div>
+    <div class="card">
+      <div class="skel skel-line"></div>
+      <div class="skel skel-line w60"></div>
+      <div class="skel skel-line w40"></div>
+    </div>
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+      </div>
+    </div>`);
+}
+
+function skeletonReport() {
+  const skRows = Array(5).fill('<div class="skel skel-line"></div>').join('');
+  setHTML('report-content', `
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      ${Array(6).fill('<div class="skel skel-line" style="width:60px;height:32px;flex-shrink:0"></div>').join('')}
+    </div>
+    <div class="stats-grid">
+      ${Array(4).fill('<div class="stat-card"><div class="skel skel-stat"></div></div>').join('')}
+    </div>
+    <div class="card">${skRows}</div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WEEK SUMMARY
+// ═══════════════════════════════════════════════════════════
+function renderWeekSummary() {
+  const days = [];
+  const today = new Date();
+  let weekMins = 0, weekEarn = 0;
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const iso = fmtDateISO(d);
+    const dayEntries = S.entries.filter(e => e.date === iso);
+    const mins = dayEntries.reduce((s, e) => s + (e.totalMins || 0), 0);
+    const earn = dayEntries.reduce((s, e) => s + (e.earnings || 0), 0);
+    weekMins += mins;
+    weekEarn += earn;
+    days.push({ d, iso, mins, earn, isToday: i === 0 });
+  }
+
+  const maxMins = Math.max(...days.map(d => d.mins), 480);
+  const labels = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+
+  const bars = days.map(({ d, mins, isToday }) => {
+    const pct = Math.max(mins > 0 ? 6 : 0, Math.round((mins / maxMins) * 100));
+    const color = mins > 0 ? (S.jobs[0]?.color || 'var(--blue)') : 'var(--border)';
+    const lbl = labels[d.getDay()];
+    return `<div class="wb${isToday ? ' today' : ''}">
+      <div class="wb-fill" style="height:${pct}%;background:${color}"></div>
+      <div class="wb-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📆 השבוע</div>
+        <div class="card-sub">${fmtMins(weekMins)} | ${fmtMoney(weekEarn)}</div>
+      </div>
+      <div class="week-bars">${bars}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BAR CHART
+// ═══════════════════════════════════════════════════════════
+function renderBarChart(entries, year, month) {
+  if (entries.length === 0) return '';
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const byDay = {};
+  entries.forEach(e => {
+    const day = parseInt(e.date.split('-')[2]);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+
+  const maxMins = Math.max(...Object.values(byDay).map(d => d.reduce((s, e) => s + e.totalMins, 0)), 480);
+  const BW = 16, GAP = 3, ML = 28, MR = 8, MT = 8, MB = 20;
+  const chartW = daysInMonth * (BW + GAP) + ML + MR;
+  const chartH = 110 + MB;
+  const innerH = chartH - MT - MB;
+
+  // Y axis labels
+  const yLabels = [0, 4, 8].map(h => {
+    const y = MT + innerH - (h / (maxMins / 60)) * innerH;
+    return `<text x="${ML - 4}" y="${y + 4}" font-size="8" fill="var(--text3)" text-anchor="end">${h}h</text>
+            <line x1="${ML}" y1="${y}" x2="${chartW - MR}" y2="${y}" stroke="var(--border)" stroke-width=".5" stroke-dasharray="3,3"/>`;
+  }).join('');
+
+  let bars = '';
+  const jobColors = {};
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayData = byDay[day];
+    if (!dayData) continue;
+    const x = ML + (day - 1) * (BW + GAP);
+    let stackY = MT + innerH;
+    dayData.forEach(e => {
+      const h = (e.totalMins || 0) / maxMins * innerH;
+      if (h < 0.5) return;
+      stackY -= h;
+      const col = e.jobColor || '#3b82f6';
+      jobColors[e.jobId] = { color: col, name: e.jobName };
+      bars += `<rect x="${x}" y="${stackY.toFixed(1)}" width="${BW}" height="${h.toFixed(1)}" fill="${col}" rx="2"/>`;
+    });
+    if (day === 1 || day % 5 === 0 || day === daysInMonth) {
+      bars += `<text x="${x + BW / 2}" y="${chartH - 4}" font-size="8" fill="var(--text3)" text-anchor="middle">${day}</text>`;
+    }
+  }
+
+  const legend = Object.values(jobColors).map(j =>
+    `<div class="cl-item"><div class="cl-dot" style="background:${j.color}"></div>${j.name}</div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title">📈 גרף שעות לפי יום</div>
+      <div class="chart-scroll" id="chart-wrap">
+        <svg width="${chartW}" height="${chartH}" style="display:block">
+          <line x1="${ML}" y1="${MT}" x2="${ML}" y2="${MT + innerH}" stroke="var(--border)" stroke-width="1"/>
+          ${yLabels}${bars}
+        </svg>
+      </div>
+      ${legend ? `<div class="chart-legend">${legend}</div>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COPY DAY
+// ═══════════════════════════════════════════════════════════
+function copyDay(fromDate) {
+  const dayEntries = S.entries.filter(e => e.date === fromDate);
+  if (dayEntries.length === 0) { toast('אין רשומות ביום זה', true); return; }
+  const today = fmtDateISO(new Date());
+  // Open entry modal for each (only first for simplicity, user can add more)
+  const e = dayEntries[0];
+  openAddEntry({ date: today, clockIn: e.clockIn, clockOut: e.clockOut, jobId: e.jobId });
+  toast(`📋 הועתק מ-${fmtDateDisplay(fromDate)}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ═══════════════════════════════════════════════════════════
+function exportCSV() {
+  if (S.entries.length === 0) { toast('אין רשומות לייצוא', true); return; }
+  const rows = [
+    ['תאריך', 'עבודה', 'כניסה', 'יציאה', 'שעות', 'הכנסה (₪)'],
+    ...S.entries.map(e => [
+      fmtDateDisplay(e.date), e.jobName, e.clockIn, e.clockOut,
+      (e.totalMins / 60).toFixed(2), (e.earnings || 0).toFixed(2)
+    ])
+  ];
+  // Totals row
+  const totalH = S.entries.reduce((s, e) => s + e.totalMins, 0) / 60;
+  const totalE = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  rows.push(['', 'סה"כ', '', '', totalH.toFixed(2), totalE.toFixed(2)]);
+
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workhours_${HE_MONTHS[S.month]}_${S.year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 קובץ CSV הורד!');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRINT / PDF
+// ═══════════════════════════════════════════════════════════
+function printReport() {
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SHARE REPORT
+// ═══════════════════════════════════════════════════════════
+async function shareReport() {
+  const totalMins = S.entries.reduce((s, e) => s + e.totalMins, 0);
+  const totalEarn = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  const days = new Set(S.entries.map(e => e.date)).size;
+  const text = `דוח WorkHours — ${HE_MONTHS[S.month]} ${S.year}\n` +
+    `ימי עבודה: ${days}\n` +
+    `סה"כ שעות: ${fmtMins(totalMins)}\n` +
+    `סה"כ הכנסה: ${fmtMoney(totalEarn)}\n` +
+    `ממוצע ליום: ${fmtMins(days > 0 ? Math.round(totalMins / days) : 0)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'דוח WorkHours', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast('📋 הדוח הועתק ללוח!');
+    }
+  } catch (e) {
+    toast('שגיאה בשיתוף', true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REMINDER (clock-in too long)
+// ═══════════════════════════════════════════════════════════
+let _reminderTimer = null;
+function startReminder() {
+  stopReminder();
+  _reminderTimer = setInterval(() => {
+    if (!S.activeSession) { stopReminder(); return; }
+    const elapsed = (Date.now() - new Date(S.activeSession.clockIn)) / 3600000;
+    if (elapsed >= 10) {
+      haptic('medium');
+      if (Notification.permission === 'granted') {
+        new Notification('WorkHours ⏰', {
+          body: `שכחת לצאת מ-${S.activeSession.jobName}? עבדת כבר ${Math.floor(elapsed)} שעות.`,
+          icon: 'icons/icon-192.png'
+        });
+      } else {
+        toast(`⏰ שכחת לצאת? עבדת ${Math.floor(elapsed)} שעות ב-${S.activeSession.jobName}`, false);
+      }
+      stopReminder(); // Only alert once
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
+
+  // Request notification permission quietly
+  if (Notification && Notification.permission === 'default') {
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function stopReminder() {
+  if (_reminderTimer) { clearInterval(_reminderTimer); _reminderTimer = null; }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OFFLINE CACHE
+// ═══════════════════════════════════════════════════════════
+const CACHE_PFX = 'wh_cache_';
+
+function cacheEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  localStorage.setItem(key, JSON.stringify(S.entries));
+}
+
+function loadCachedEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  const raw = localStorage.getItem(key);
+  if (raw) { S.entries = JSON.parse(raw); return true; }
+  return false;
+}
+
+function watchOffline() {
+  const bar = qs('offline-bar');
+  window.addEventListener('online', () => { if (bar) bar.classList.remove('show'); });
+  window.addEventListener('offline', () => { if (bar) bar.classList.add('show'); });
+  if (!navigator.onLine && bar) bar.classList.add('show');
+}
+
+// Wrap loadEntries to use cache
+const _origLoadEntries = loadEntries;
+loadEntries = async function() {
+  if (!navigator.onLine) {
+    loadCachedEntries();
+    return;
+  }
+  await _origLoadEntries();
+  cacheEntries();
+};
+
+// ═══════════════════════════════════════════════════════════
+//  TIME PICKER
+// ═══════════════════════════════════════════════════════════
+let _tpField = null;
+
+function openTp(fieldId, title) {
+  _tpField = fieldId;
+  qs('tp-title').textContent = title || 'בחר שעה';
+  const cur = qs(fieldId)?.value || '';
+  const [hh, mm] = cur ? cur.split(':') : [new Date().getHours().toString().padStart(2,'0'), '00'];
+
+  // Build hour items 00-23
+  let hHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 24; i++) {
+    const v = String(i).padStart(2,'0');
+    hHtml += `<div class="tp-item${v===hh?' sel':''}" data-v="${v}" onclick="tpSel(this,'h')">${v}</div>`;
+  }
+  hHtml += '<div class="tp-pad"></div>';
+
+  // Build minute items 00-59
+  let mHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 60; i++) {
+    const v = String(i).padStart(2,'0');
+    mHtml += `<div class="tp-item${v===mm?' sel':''}" data-v="${v}" onclick="tpSel(this,'m')">${v}</div>`;
+  }
+  mHtml += '<div class="tp-pad"></div>';
+
+  setHTML('tp-h', hHtml);
+  setHTML('tp-m', mHtml);
+
+  // Scroll to selected
+  setTimeout(() => {
+    const selH = qs('tp-h').querySelector('.sel');
+    const selM = qs('tp-m').querySelector('.sel');
+    if (selH) selH.scrollIntoView({ block: 'center' });
+    if (selM) selM.scrollIntoView({ block: 'center' });
+    tpUpdateDisplay();
+  }, 30);
+
+  qs('tp-overlay').classList.add('active');
+}
+
+function tpSel(el, col) {
+  const container = qs(col === 'h' ? 'tp-h' : 'tp-m');
+  container.querySelectorAll('.tp-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  tpUpdateDisplay();
+}
+
+function tpUpdateDisplay() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  const h = hEl?.dataset.v || '00';
+  const m = mEl?.dataset.v || '00';
+  qs('tp-disp').textContent = `${h}:${m}`;
+}
+
+function applyTp() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  if (_tpField && hEl && mEl) {
+    const val = `${hEl.dataset.v}:${mEl.dataset.v}`;
+    const field = qs(_tpField);
+    if (field) { field.value = val; updateEntryCalc(); }
+  }
+  closeTp();
+}
+
+function closeTp() {
+  qs('tp-overlay').classList.remove('active');
+  _tpField = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MULTIPLE SCAN QUEUE
+// ═══════════════════════════════════════════════════════════
+let _scanQueue = [];
+
+async function handleMultiScan(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const dataUrl = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(file);
+    });
+    _scanQueue.push({ file, dataUrl, b64: dataUrl.split(',')[1], mime: file.type, status: 'pending', result: null });
+  }
+  renderScanQueue();
+  // Auto process
+  await processScanQueue();
+}
+
+function renderScanQueue() {
+  if (_scanQueue.length === 0) { setHTML('home-scan-queue', ''); return; }
+  const items = _scanQueue.map((item, i) => {
+    const statusMap = { pending: '⏳ ממתין', processing: '🔄 מעבד...', ok: '✅ זוהה', err: '❌ שגיאה' };
+    const cls = item.status === 'ok' ? 'ok' : item.status === 'err' ? 'err' : 'pending';
+    const dateDisp = item.result?.date ? fmtDateDisplay(item.result.date) : '';
+    const timeDisp = item.result ? `${item.result.clockIn||'?'}–${item.result.clockOut||'?'}` : '';
+    return `<div class="sq-item">
+      <img class="sq-thumb" src="${item.dataUrl}" alt="תלוש ${i+1}">
+      <div class="sq-info">
+        <div class="sq-name">תלוש ${i+1}</div>
+        <div class="sq-state ${cls}">${statusMap[item.status]||item.status}</div>
+        ${dateDisp ? `<div class="sq-date">${dateDisp} ${timeDisp}</div>` : ''}
+      </div>
+      ${item.status === 'ok' ? `<button class="btn-icon" style="font-size:11px" onclick="applyScanQueueItem(${i})">שמור</button>` : ''}
+      <button class="sq-rm" onclick="removeScanQueueItem(${i})">✕</button>
+    </div>`;
+  }).join('');
+  setHTML('home-scan-queue', `<div class="sq-list">${items}</div>`);
+}
+
+async function processScanQueue() {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  if (!apiKey) { toast('הוסף מפתח API בהגדרות', true); return; }
+  for (let i = 0; i < _scanQueue.length; i++) {
+    if (_scanQueue[i].status !== 'pending') continue;
+    _scanQueue[i].status = 'processing';
+    renderScanQueue();
+    try {
+      _scanQueue[i].result = await analyzeWithClaude(_scanQueue[i].b64, _scanQueue[i].mime);
+      _scanQueue[i].status = 'ok';
+    } catch (e) {
+      _scanQueue[i].status = 'err';
+      _scanQueue[i].error = e.message;
+    }
+    renderScanQueue();
+  }
+  const ok = _scanQueue.filter(i => i.status === 'ok').length;
+  toast(`✅ עיבוד הסתיים: ${ok}/${_scanQueue.length} תלושים זוהו`);
+}
+
+function applyScanQueueItem(idx) {
+  const item = _scanQueue[idx];
+  if (!item?.result) return;
+  const date = item.result.date;
+  const defJobId = S.jobs[0]?.id || '';
+  // Find job by name if Claude returned one
+  let jobId = defJobId;
+  if (item.result.jobName) {
+    const match = S.jobs.find(j => j.name.includes(item.result.jobName) || item.result.jobName.includes(j.name));
+    if (match) jobId = match.id;
+  }
+  openAddEntry({ date, clockIn: item.result.clockIn, clockOut: item.result.clockOut, jobId });
+  removeScanQueueItem(idx);
+}
+
+function removeScanQueueItem(idx) {
+  _scanQueue.splice(idx, 1);
+  renderScanQueue();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENHANCED analyzeWithClaude (auto job detection)
+// ═══════════════════════════════════════════════════════════
+async function analyzeWithClaude(b64, mime) {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  const jobNames = S.jobs.map(j => j.name).join(', ');
+  const prompt = `נתח את תלוש העבודה. חלץ:
+- תאריך העבודה
+- שעת כניסה
+- שעת יציאה
+${jobNames ? `- שם מקום העבודה (בדוק אם תואם לאחת מ: ${jobNames})` : ''}
+
+החזר JSON בלבד, ללא markdown:
+{"date":"YYYY-MM-DD","clockIn":"HH:MM","clockOut":"HH:MM","confidence":"high/medium/low","notes":"","jobName":"שם אם זוהה או null"}
+
+אם לא ניתן לחלץ נתון, השתמש ב-null. תאריך היום: ${fmtDateISO(new Date())}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-5',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+        { type: 'text', text: prompt }
+      ]}]
+    })
+  });
+
+  if (!resp.ok) {
+    let errMsg = `שגיאת שרת ${resp.status}`;
+    try { const eb = await resp.json(); errMsg = eb.error?.message || errMsg; } catch (_) {}
+    throw new Error(errMsg);
+  }
+  const data = await resp.json();
+  const text = data.content[0].text.replace(/```json|```/g, '').trim();
+  return JSON.parse(text);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT ADDITIONS (called from window.load)
+// ═══════════════════════════════════════════════════════════
+function appExtrasInit() {
+  darkModeInit();
+  watchOffline();
+  // Resume reminder if session was active
+  if (S.activeSession) startReminder();
+}
+
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js">
+// ═══════════════════════════════════════════════════════════
+//  DARK MODE
+// ═══════════════════════════════════════════════════════════
+function darkModeInit() {
+  const saved = localStorage.getItem('wh_dark');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  updateDarkBtn();
+}
+
+function toggleDark() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('wh_dark', next);
+  updateDarkBtn();
+}
+
+function getDarkLabel() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  return isDark ? '🌙 כהה' : '☀️ בהיר';
+}
+
+function updateDarkBtn() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const hdrBtn = qs('dm-btn');
+  if (hdrBtn) hdrBtn.textContent = isDark ? '☀️' : '🌙';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HAPTIC FEEDBACK
+// ═══════════════════════════════════════════════════════════
+function haptic(type = 'light') {
+  if (!navigator.vibrate) return;
+  const p = { light: 30, medium: 50, heavy: [50, 30, 80] };
+  navigator.vibrate(p[type] || 30);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EARNINGS ANIMATION
+// ═══════════════════════════════════════════════════════════
+function showEarnings(amount, totalMins, jobName) {
+  qs('ea-amount').textContent = fmtMoney(amount);
+  qs('ea-sub').textContent = fmtMins(totalMins) + ' שעות עבודה';
+  qs('ea-job').textContent = jobName || '';
+  const ov = qs('earn-overlay');
+  ov.classList.add('show');
+  // Auto-hide after 3s
+  setTimeout(() => hideEarnings(), 3500);
+}
+
+function hideEarnings() {
+  qs('earn-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SKELETON LOADING
+// ═══════════════════════════════════════════════════════════
+function skeletonHome() {
+  setHTML('home-content', `
+    <div class="card"><div class="skel skel-block"></div></div>
+    <div class="card">
+      <div class="skel skel-line"></div>
+      <div class="skel skel-line w60"></div>
+      <div class="skel skel-line w40"></div>
+    </div>
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+      </div>
+    </div>`);
+}
+
+function skeletonReport() {
+  const skRows = Array(5).fill('<div class="skel skel-line"></div>').join('');
+  setHTML('report-content', `
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      ${Array(6).fill('<div class="skel skel-line" style="width:60px;height:32px;flex-shrink:0"></div>').join('')}
+    </div>
+    <div class="stats-grid">
+      ${Array(4).fill('<div class="stat-card"><div class="skel skel-stat"></div></div>').join('')}
+    </div>
+    <div class="card">${skRows}</div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WEEK SUMMARY
+// ═══════════════════════════════════════════════════════════
+function renderWeekSummary() {
+  const days = [];
+  const today = new Date();
+  let weekMins = 0, weekEarn = 0;
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const iso = fmtDateISO(d);
+    const dayEntries = S.entries.filter(e => e.date === iso);
+    const mins = dayEntries.reduce((s, e) => s + (e.totalMins || 0), 0);
+    const earn = dayEntries.reduce((s, e) => s + (e.earnings || 0), 0);
+    weekMins += mins;
+    weekEarn += earn;
+    days.push({ d, iso, mins, earn, isToday: i === 0 });
+  }
+
+  const maxMins = Math.max(...days.map(d => d.mins), 480);
+  const labels = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+
+  const bars = days.map(({ d, mins, isToday }) => {
+    const pct = Math.max(mins > 0 ? 6 : 0, Math.round((mins / maxMins) * 100));
+    const color = mins > 0 ? (S.jobs[0]?.color || 'var(--blue)') : 'var(--border)';
+    const lbl = labels[d.getDay()];
+    return `<div class="wb${isToday ? ' today' : ''}">
+      <div class="wb-fill" style="height:${pct}%;background:${color}"></div>
+      <div class="wb-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📆 השבוע</div>
+        <div class="card-sub">${fmtMins(weekMins)} | ${fmtMoney(weekEarn)}</div>
+      </div>
+      <div class="week-bars">${bars}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BAR CHART
+// ═══════════════════════════════════════════════════════════
+function renderBarChart(entries, year, month) {
+  if (entries.length === 0) return '';
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const byDay = {};
+  entries.forEach(e => {
+    const day = parseInt(e.date.split('-')[2]);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+
+  const maxMins = Math.max(...Object.values(byDay).map(d => d.reduce((s, e) => s + e.totalMins, 0)), 480);
+  const BW = 16, GAP = 3, ML = 28, MR = 8, MT = 8, MB = 20;
+  const chartW = daysInMonth * (BW + GAP) + ML + MR;
+  const chartH = 110 + MB;
+  const innerH = chartH - MT - MB;
+
+  // Y axis labels
+  const yLabels = [0, 4, 8].map(h => {
+    const y = MT + innerH - (h / (maxMins / 60)) * innerH;
+    return `<text x="${ML - 4}" y="${y + 4}" font-size="8" fill="var(--text3)" text-anchor="end">${h}h</text>
+            <line x1="${ML}" y1="${y}" x2="${chartW - MR}" y2="${y}" stroke="var(--border)" stroke-width=".5" stroke-dasharray="3,3"/>`;
+  }).join('');
+
+  let bars = '';
+  const jobColors = {};
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayData = byDay[day];
+    if (!dayData) continue;
+    const x = ML + (day - 1) * (BW + GAP);
+    let stackY = MT + innerH;
+    dayData.forEach(e => {
+      const h = (e.totalMins || 0) / maxMins * innerH;
+      if (h < 0.5) return;
+      stackY -= h;
+      const col = e.jobColor || '#3b82f6';
+      jobColors[e.jobId] = { color: col, name: e.jobName };
+      bars += `<rect x="${x}" y="${stackY.toFixed(1)}" width="${BW}" height="${h.toFixed(1)}" fill="${col}" rx="2"/>`;
+    });
+    if (day === 1 || day % 5 === 0 || day === daysInMonth) {
+      bars += `<text x="${x + BW / 2}" y="${chartH - 4}" font-size="8" fill="var(--text3)" text-anchor="middle">${day}</text>`;
+    }
+  }
+
+  const legend = Object.values(jobColors).map(j =>
+    `<div class="cl-item"><div class="cl-dot" style="background:${j.color}"></div>${j.name}</div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title">📈 גרף שעות לפי יום</div>
+      <div class="chart-scroll" id="chart-wrap">
+        <svg width="${chartW}" height="${chartH}" style="display:block">
+          <line x1="${ML}" y1="${MT}" x2="${ML}" y2="${MT + innerH}" stroke="var(--border)" stroke-width="1"/>
+          ${yLabels}${bars}
+        </svg>
+      </div>
+      ${legend ? `<div class="chart-legend">${legend}</div>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COPY DAY
+// ═══════════════════════════════════════════════════════════
+function copyDay(fromDate) {
+  const dayEntries = S.entries.filter(e => e.date === fromDate);
+  if (dayEntries.length === 0) { toast('אין רשומות ביום זה', true); return; }
+  const today = fmtDateISO(new Date());
+  // Open entry modal for each (only first for simplicity, user can add more)
+  const e = dayEntries[0];
+  openAddEntry({ date: today, clockIn: e.clockIn, clockOut: e.clockOut, jobId: e.jobId });
+  toast(`📋 הועתק מ-${fmtDateDisplay(fromDate)}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ═══════════════════════════════════════════════════════════
+function exportCSV() {
+  if (S.entries.length === 0) { toast('אין רשומות לייצוא', true); return; }
+  const rows = [
+    ['תאריך', 'עבודה', 'כניסה', 'יציאה', 'שעות', 'הכנסה (₪)'],
+    ...S.entries.map(e => [
+      fmtDateDisplay(e.date), e.jobName, e.clockIn, e.clockOut,
+      (e.totalMins / 60).toFixed(2), (e.earnings || 0).toFixed(2)
+    ])
+  ];
+  // Totals row
+  const totalH = S.entries.reduce((s, e) => s + e.totalMins, 0) / 60;
+  const totalE = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  rows.push(['', 'סה"כ', '', '', totalH.toFixed(2), totalE.toFixed(2)]);
+
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workhours_${HE_MONTHS[S.month]}_${S.year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 קובץ CSV הורד!');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRINT / PDF
+// ═══════════════════════════════════════════════════════════
+function printReport() {
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SHARE REPORT
+// ═══════════════════════════════════════════════════════════
+async function shareReport() {
+  const totalMins = S.entries.reduce((s, e) => s + e.totalMins, 0);
+  const totalEarn = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  const days = new Set(S.entries.map(e => e.date)).size;
+  const text = `דוח WorkHours — ${HE_MONTHS[S.month]} ${S.year}\n` +
+    `ימי עבודה: ${days}\n` +
+    `סה"כ שעות: ${fmtMins(totalMins)}\n` +
+    `סה"כ הכנסה: ${fmtMoney(totalEarn)}\n` +
+    `ממוצע ליום: ${fmtMins(days > 0 ? Math.round(totalMins / days) : 0)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'דוח WorkHours', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast('📋 הדוח הועתק ללוח!');
+    }
+  } catch (e) {
+    toast('שגיאה בשיתוף', true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REMINDER (clock-in too long)
+// ═══════════════════════════════════════════════════════════
+let _reminderTimer = null;
+function startReminder() {
+  stopReminder();
+  _reminderTimer = setInterval(() => {
+    if (!S.activeSession) { stopReminder(); return; }
+    const elapsed = (Date.now() - new Date(S.activeSession.clockIn)) / 3600000;
+    if (elapsed >= 10) {
+      haptic('medium');
+      if (Notification.permission === 'granted') {
+        new Notification('WorkHours ⏰', {
+          body: `שכחת לצאת מ-${S.activeSession.jobName}? עבדת כבר ${Math.floor(elapsed)} שעות.`,
+          icon: 'icons/icon-192.png'
+        });
+      } else {
+        toast(`⏰ שכחת לצאת? עבדת ${Math.floor(elapsed)} שעות ב-${S.activeSession.jobName}`, false);
+      }
+      stopReminder(); // Only alert once
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
+
+  // Request notification permission quietly
+  if (Notification && Notification.permission === 'default') {
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function stopReminder() {
+  if (_reminderTimer) { clearInterval(_reminderTimer); _reminderTimer = null; }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OFFLINE CACHE
+// ═══════════════════════════════════════════════════════════
+const CACHE_PFX = 'wh_cache_';
+
+function cacheEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  localStorage.setItem(key, JSON.stringify(S.entries));
+}
+
+function loadCachedEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  const raw = localStorage.getItem(key);
+  if (raw) { S.entries = JSON.parse(raw); return true; }
+  return false;
+}
+
+function watchOffline() {
+  const bar = qs('offline-bar');
+  window.addEventListener('online', () => { if (bar) bar.classList.remove('show'); });
+  window.addEventListener('offline', () => { if (bar) bar.classList.add('show'); });
+  if (!navigator.onLine && bar) bar.classList.add('show');
+}
+
+// Wrap loadEntries to use cache
+const _origLoadEntries = loadEntries;
+loadEntries = async function() {
+  if (!navigator.onLine) {
+    loadCachedEntries();
+    return;
+  }
+  await _origLoadEntries();
+  cacheEntries();
+};
+
+// ═══════════════════════════════════════════════════════════
+//  TIME PICKER
+// ═══════════════════════════════════════════════════════════
+let _tpField = null;
+
+function openTp(fieldId, title) {
+  _tpField = fieldId;
+  qs('tp-title').textContent = title || 'בחר שעה';
+  const cur = qs(fieldId)?.value || '';
+  const [hh, mm] = cur ? cur.split(':') : [new Date().getHours().toString().padStart(2,'0'), '00'];
+
+  // Build hour items 00-23
+  let hHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 24; i++) {
+    const v = String(i).padStart(2,'0');
+    hHtml += `<div class="tp-item${v===hh?' sel':''}" data-v="${v}" onclick="tpSel(this,'h')">${v}</div>`;
+  }
+  hHtml += '<div class="tp-pad"></div>';
+
+  // Build minute items 00-59
+  let mHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 60; i++) {
+    const v = String(i).padStart(2,'0');
+    mHtml += `<div class="tp-item${v===mm?' sel':''}" data-v="${v}" onclick="tpSel(this,'m')">${v}</div>`;
+  }
+  mHtml += '<div class="tp-pad"></div>';
+
+  setHTML('tp-h', hHtml);
+  setHTML('tp-m', mHtml);
+
+  // Scroll to selected
+  setTimeout(() => {
+    const selH = qs('tp-h').querySelector('.sel');
+    const selM = qs('tp-m').querySelector('.sel');
+    if (selH) selH.scrollIntoView({ block: 'center' });
+    if (selM) selM.scrollIntoView({ block: 'center' });
+    tpUpdateDisplay();
+  }, 30);
+
+  qs('tp-overlay').classList.add('active');
+}
+
+function tpSel(el, col) {
+  const container = qs(col === 'h' ? 'tp-h' : 'tp-m');
+  container.querySelectorAll('.tp-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  tpUpdateDisplay();
+}
+
+function tpUpdateDisplay() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  const h = hEl?.dataset.v || '00';
+  const m = mEl?.dataset.v || '00';
+  qs('tp-disp').textContent = `${h}:${m}`;
+}
+
+function applyTp() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  if (_tpField && hEl && mEl) {
+    const val = `${hEl.dataset.v}:${mEl.dataset.v}`;
+    const field = qs(_tpField);
+    if (field) { field.value = val; updateEntryCalc(); }
+  }
+  closeTp();
+}
+
+function closeTp() {
+  qs('tp-overlay').classList.remove('active');
+  _tpField = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MULTIPLE SCAN QUEUE
+// ═══════════════════════════════════════════════════════════
+let _scanQueue = [];
+
+async function handleMultiScan(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const dataUrl = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(file);
+    });
+    _scanQueue.push({ file, dataUrl, b64: dataUrl.split(',')[1], mime: file.type, status: 'pending', result: null });
+  }
+  renderScanQueue();
+  // Auto process
+  await processScanQueue();
+}
+
+function renderScanQueue() {
+  if (_scanQueue.length === 0) { setHTML('home-scan-queue', ''); return; }
+  const items = _scanQueue.map((item, i) => {
+    const statusMap = { pending: '⏳ ממתין', processing: '🔄 מעבד...', ok: '✅ זוהה', err: '❌ שגיאה' };
+    const cls = item.status === 'ok' ? 'ok' : item.status === 'err' ? 'err' : 'pending';
+    const dateDisp = item.result?.date ? fmtDateDisplay(item.result.date) : '';
+    const timeDisp = item.result ? `${item.result.clockIn||'?'}–${item.result.clockOut||'?'}` : '';
+    return `<div class="sq-item">
+      <img class="sq-thumb" src="${item.dataUrl}" alt="תלוש ${i+1}">
+      <div class="sq-info">
+        <div class="sq-name">תלוש ${i+1}</div>
+        <div class="sq-state ${cls}">${statusMap[item.status]||item.status}</div>
+        ${dateDisp ? `<div class="sq-date">${dateDisp} ${timeDisp}</div>` : ''}
+      </div>
+      ${item.status === 'ok' ? `<button class="btn-icon" style="font-size:11px" onclick="applyScanQueueItem(${i})">שמור</button>` : ''}
+      <button class="sq-rm" onclick="removeScanQueueItem(${i})">✕</button>
+    </div>`;
+  }).join('');
+  setHTML('home-scan-queue', `<div class="sq-list">${items}</div>`);
+}
+
+async function processScanQueue() {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  if (!apiKey) { toast('הוסף מפתח API בהגדרות', true); return; }
+  for (let i = 0; i < _scanQueue.length; i++) {
+    if (_scanQueue[i].status !== 'pending') continue;
+    _scanQueue[i].status = 'processing';
+    renderScanQueue();
+    try {
+      _scanQueue[i].result = await analyzeWithClaude(_scanQueue[i].b64, _scanQueue[i].mime);
+      _scanQueue[i].status = 'ok';
+    } catch (e) {
+      _scanQueue[i].status = 'err';
+      _scanQueue[i].error = e.message;
+    }
+    renderScanQueue();
+  }
+  const ok = _scanQueue.filter(i => i.status === 'ok').length;
+  toast(`✅ עיבוד הסתיים: ${ok}/${_scanQueue.length} תלושים זוהו`);
+}
+
+function applyScanQueueItem(idx) {
+  const item = _scanQueue[idx];
+  if (!item?.result) return;
+  const date = item.result.date;
+  const defJobId = S.jobs[0]?.id || '';
+  // Find job by name if Claude returned one
+  let jobId = defJobId;
+  if (item.result.jobName) {
+    const match = S.jobs.find(j => j.name.includes(item.result.jobName) || item.result.jobName.includes(j.name));
+    if (match) jobId = match.id;
+  }
+  openAddEntry({ date, clockIn: item.result.clockIn, clockOut: item.result.clockOut, jobId });
+  removeScanQueueItem(idx);
+}
+
+function removeScanQueueItem(idx) {
+  _scanQueue.splice(idx, 1);
+  renderScanQueue();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENHANCED analyzeWithClaude (auto job detection)
+// ═══════════════════════════════════════════════════════════
+async function analyzeWithClaude(b64, mime) {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  const jobNames = S.jobs.map(j => j.name).join(', ');
+  const prompt = `נתח את תלוש העבודה. חלץ:
+- תאריך העבודה
+- שעת כניסה
+- שעת יציאה
+${jobNames ? `- שם מקום העבודה (בדוק אם תואם לאחת מ: ${jobNames})` : ''}
+
+החזר JSON בלבד, ללא markdown:
+{"date":"YYYY-MM-DD","clockIn":"HH:MM","clockOut":"HH:MM","confidence":"high/medium/low","notes":"","jobName":"שם אם זוהה או null"}
+
+אם לא ניתן לחלץ נתון, השתמש ב-null. תאריך היום: ${fmtDateISO(new Date())}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-5',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+        { type: 'text', text: prompt }
+      ]}]
+    })
+  });
+
+  if (!resp.ok) {
+    let errMsg = `שגיאת שרת ${resp.status}`;
+    try { const eb = await resp.json(); errMsg = eb.error?.message || errMsg; } catch (_) {}
+    throw new Error(errMsg);
+  }
+  const data = await resp.json();
+  const text = data.content[0].text.replace(/```json|```/g, '').trim();
+  return JSON.parse(text);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT ADDITIONS (called from window.load)
+// ═══════════════════════════════════════════════════════════
+function appExtrasInit() {
+  darkModeInit();
+  watchOffline();
+  // Resume reminder if session was active
+  if (S.activeSession) startReminder();
+}
+
+</script>
 
 <script>
 // ═══════════════════════════════════════════════════════════
 //  CONSTANTS
 // ═══════════════════════════════════════════════════════════
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyBAcjqAATlZ5ZWTC8VfbzCoHoY6zLKbw6o",
   authDomain: "workhours-9815f.firebaseapp.com",
@@ -590,7 +2335,7 @@ function showScreen(id) {
   document.querySelectorAll('.main-screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   const scr = qs(id + '-screen');
-  if (scr) scr.classList.add('active');
+  if (scr) { scr.classList.add('active'); scr.classList.add('screen-entering'); setTimeout(()=>scr.classList.remove('screen-entering'),220); }
   const nb = qs('nav-' + id);
   if (nb) nb.classList.add('active');
   S.currentScreen = id;
@@ -681,6 +2426,7 @@ async function doRegister() {
 async function doLogout() {
   if (!confirm('בטוח שרוצה להתנתק?')) return;
   stopTimer();
+  stopReminder();
   await auth.signOut();
 }
 
@@ -822,6 +2568,8 @@ async function clockIn(jobId) {
     await db.collection('users').doc(S.user.uid).update({ activeSession: session });
     S.activeSession = session;
     startTimer();
+    startReminder();
+    haptic('medium');
     renderHome();
     toast('✅ כניסה לעבודה: ' + job.name);
   } catch (e) {
@@ -846,6 +2594,7 @@ async function clockOut() {
   qs('co-total').textContent    = fmtMins(totalMins);
   qs('co-earn').textContent     = fmtMoney(ec.earnings);
 
+  haptic('light');
   window._pendingClockOut = { now, totalMins, ec, job };
   showModal('clockout-modal');
 }
@@ -873,9 +2622,11 @@ async function confirmClockOut() {
     stopTimer();
     const ed = new Date(entry.date);
     if (ed.getMonth() === S.month && ed.getFullYear() === S.year) await loadEntries();
+    stopReminder();
+    haptic('heavy');
     hideModal('clockout-modal');
     renderHome();
-    toast('✅ יצאת מעבודה!\n' + fmtMoney(ec.earnings));
+    showEarnings(ec.earnings, entry.totalMins, entry.jobName);
   } catch (e) {
     toast('שגיאה: ' + e.message, true);
   } finally {
@@ -980,6 +2731,11 @@ function renderHome() {
         <button class="btn btn-primary" style="flex:1" onclick="homeStartCamera()">🎬 מצלמה</button>
         <button class="btn btn-outline" style="flex:1" onclick="qs('home-gallery-file').click()">🖼 גלריה</button>
       </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button class="btn btn-ghost btn-sm" style="flex:1;font-size:12px" onclick="qs('home-multi-file').click()">📚 סריקה מרובה</button>
+      </div>
+      <input type="file" id="home-multi-file" accept="image/*" multiple style="display:none" onchange="handleMultiScan(event)">
+      <div id="home-scan-queue"></div>
       <input type="file" id="home-gallery-file" accept="image/*" style="display:none" onchange="homeHandleGallery(event)">
       <div id="home-camera-wrap" style="display:none">
         <div id="home-camera-container" style="position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:4/3;margin-bottom:8px">
@@ -1018,7 +2774,8 @@ function renderHome() {
 
   const manualBtn = `<button class="btn btn-outline" style="margin-bottom:12px" onclick="openAddEntry({})">✏️ הכנסה ידנית</button>`;
 
-  setHTML('home-content', activeHtml + noJobsHtml + homeScanHtml + manualBtn + todayHtml + recentHtml);
+  const weekHtml = renderWeekSummary();
+  setHTML('home-content', activeHtml + noJobsHtml + weekHtml + homeScanHtml + manualBtn + todayHtml + recentHtml);
   if (S.activeSession) updateTimerDisplay();
 }
 
@@ -1120,16 +2877,27 @@ function renderReport() {
         <div class="day-card">
           <div class="day-header">
             <div class="day-label">${dayLabel}</div>
-            <div class="day-total">${fmtMins(dayMins)} | ${fmtMoney(dayEarn)}</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="day-total">${fmtMins(dayMins)} | ${fmtMoney(dayEarn)}</div>
+              <button class="copy-day-btn" onclick="copyDay('${date}')">📋 העתק</button>
+            </div>
           </div>
           ${subRows}
         </div>`;
     }).join('');
   }
 
+  const chartHtml = renderBarChart(S.entries, S.year, S.month);
+  const actionsHtml = `
+    <div class="rpt-acts">
+      <button class="ra" onclick="exportCSV()">📥 ייצוא CSV</button>
+      <button class="ra" onclick="printReport()">🖨️ PDF / הדפסה</button>
+      <button class="ra" onclick="shareReport()">📤 שיתוף</button>
+    </div>`;
   setHTML('report-content',
     `<div class="month-sel" id="month-sel-row">${monthSel}</div>` +
-    statsHtml + jobBreakHtml +
+    actionsHtml + statsHtml + jobBreakHtml +
+    chartHtml +
     `<div class="card"><div class="card-title">📅 פירוט יומי</div>${dailyHtml}</div>`
   );
   // Scroll active month chip into view
@@ -1209,8 +2977,9 @@ function updateEntryCalc() {
   const job  = getJob(jobId);
   const rate = job.hourlyRate || 0;
   const ec   = calcEarnings(totalMins, rate);
+  const hoursDecimal = (totalMins / 60).toFixed(2).replace(/\.?0+$/, '');
   let html = `<div class="calc-box">
-    <div class="calc-row"><span>⏱ סה"כ שעות</span><strong>${fmtMins(totalMins)}</strong></div>`;
+    <div class="calc-row"><span>⏱ סה"כ שעות</span><strong>${fmtMins(totalMins)} (${hoursDecimal} שעות)</strong></div>`;
   if (rate > 0)
     html += `<div class="calc-row earn"><span>💰 הכנסה</span><strong>${fmtMoney(ec.earnings)}</strong></div>`;
   html += '</div>';
@@ -1227,7 +2996,11 @@ async function saveEntryFromModal() {
   if (!dateStr || !inStr || !outStr) { toast('מלא תאריך ושעות', true); return; }
   let inDate  = parseToDate(dateStr, inStr);
   let outDate = parseToDate(dateStr, outStr);
-  if (outDate <= inDate) outDate.setDate(outDate.getDate() + 1);
+  if (outDate < inDate) {
+    // Ask user about midnight crossing
+    if (!confirm('שעת היציאה לפני הכניסה. האם עבדת דרך חצות? (לחץ OK לאישור)')) return;
+    outDate.setDate(outDate.getDate() + 1);
+  }
   const totalMins = Math.round((outDate - inDate) / 60000);
   if (totalMins <= 0) { toast('שעות לא תקינות', true); return; }
   const job = getJob(jobId);
@@ -1382,11 +3155,21 @@ function renderSettings() {
     </div>
 
     <div class="card">
+      <div class="card-header">
+        <div class="card-title">🎨 תצוגה</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+        <span style="font-size:14px;font-weight:600">מצב כהה</span>
+        <button class="btn-icon" id="settings-dm-btn" onclick="toggleDark()" style="min-width:60px">${getDarkLabel()}</button>
+      </div>
+    </div>
+
+    <div class="card">
       <div class="card-title">ℹ️ אודות האפליקציה</div>
       <div class="about-info">
         גרסה: <strong>v${APP_VERSION}</strong><br>
         WorkHours — ניהול שעות עבודה<br>
-        חישוב אוטומטי לפי חוק עבודה ישראלי
+        חישוב מהיר ופשוט
       </div>
     </div>
 
@@ -1775,6 +3558,7 @@ window.addEventListener('load', () => {
         await initActiveSession();
         await loadEntries();
         showApp();
+        appExtrasInit();
       } catch (e) {
         console.error(e);
         toast('שגיאה בטעינה: ' + e.message, true);
@@ -1788,6 +3572,577 @@ window.addEventListener('load', () => {
     }
   });
 });
+
+// ═══════════════════════════════════════════════════════════
+//  DARK MODE
+// ═══════════════════════════════════════════════════════════
+function darkModeInit() {
+  const saved = localStorage.getItem('wh_dark');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+  }
+  updateDarkBtn();
+}
+
+function toggleDark() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('wh_dark', next);
+  updateDarkBtn();
+}
+
+function getDarkLabel() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  return isDark ? '🌙 כהה' : '☀️ בהיר';
+}
+
+function updateDarkBtn() {
+  const cur = document.documentElement.getAttribute('data-theme');
+  const isDark = cur === 'dark' || (!cur && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  const hdrBtn = qs('dm-btn');
+  if (hdrBtn) hdrBtn.textContent = isDark ? '☀️' : '🌙';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HAPTIC FEEDBACK
+// ═══════════════════════════════════════════════════════════
+function haptic(type = 'light') {
+  if (!navigator.vibrate) return;
+  const p = { light: 30, medium: 50, heavy: [50, 30, 80] };
+  navigator.vibrate(p[type] || 30);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EARNINGS ANIMATION
+// ═══════════════════════════════════════════════════════════
+function showEarnings(amount, totalMins, jobName) {
+  qs('ea-amount').textContent = fmtMoney(amount);
+  qs('ea-sub').textContent = fmtMins(totalMins) + ' שעות עבודה';
+  qs('ea-job').textContent = jobName || '';
+  const ov = qs('earn-overlay');
+  ov.classList.add('show');
+  // Auto-hide after 3s
+  setTimeout(() => hideEarnings(), 3500);
+}
+
+function hideEarnings() {
+  qs('earn-overlay').classList.remove('show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SKELETON LOADING
+// ═══════════════════════════════════════════════════════════
+function skeletonHome() {
+  setHTML('home-content', `
+    <div class="card"><div class="skel skel-block"></div></div>
+    <div class="card">
+      <div class="skel skel-line"></div>
+      <div class="skel skel-line w60"></div>
+      <div class="skel skel-line w40"></div>
+    </div>
+    <div class="card">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+        <div class="stat-card"><div class="skel skel-stat"></div></div>
+      </div>
+    </div>`);
+}
+
+function skeletonReport() {
+  const skRows = Array(5).fill('<div class="skel skel-line"></div>').join('');
+  setHTML('report-content', `
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      ${Array(6).fill('<div class="skel skel-line" style="width:60px;height:32px;flex-shrink:0"></div>').join('')}
+    </div>
+    <div class="stats-grid">
+      ${Array(4).fill('<div class="stat-card"><div class="skel skel-stat"></div></div>').join('')}
+    </div>
+    <div class="card">${skRows}</div>`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  WEEK SUMMARY
+// ═══════════════════════════════════════════════════════════
+function renderWeekSummary() {
+  const days = [];
+  const today = new Date();
+  let weekMins = 0, weekEarn = 0;
+
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const iso = fmtDateISO(d);
+    const dayEntries = S.entries.filter(e => e.date === iso);
+    const mins = dayEntries.reduce((s, e) => s + (e.totalMins || 0), 0);
+    const earn = dayEntries.reduce((s, e) => s + (e.earnings || 0), 0);
+    weekMins += mins;
+    weekEarn += earn;
+    days.push({ d, iso, mins, earn, isToday: i === 0 });
+  }
+
+  const maxMins = Math.max(...days.map(d => d.mins), 480);
+  const labels = ['א', 'ב', 'ג', 'ד', 'ה', 'ו', 'ש'];
+
+  const bars = days.map(({ d, mins, isToday }) => {
+    const pct = Math.max(mins > 0 ? 6 : 0, Math.round((mins / maxMins) * 100));
+    const color = mins > 0 ? (S.jobs[0]?.color || 'var(--blue)') : 'var(--border)';
+    const lbl = labels[d.getDay()];
+    return `<div class="wb${isToday ? ' today' : ''}">
+      <div class="wb-fill" style="height:${pct}%;background:${color}"></div>
+      <div class="wb-lbl">${lbl}</div>
+    </div>`;
+  }).join('');
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">📆 השבוע</div>
+        <div class="card-sub">${fmtMins(weekMins)} | ${fmtMoney(weekEarn)}</div>
+      </div>
+      <div class="week-bars">${bars}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  BAR CHART
+// ═══════════════════════════════════════════════════════════
+function renderBarChart(entries, year, month) {
+  if (entries.length === 0) return '';
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const byDay = {};
+  entries.forEach(e => {
+    const day = parseInt(e.date.split('-')[2]);
+    if (!byDay[day]) byDay[day] = [];
+    byDay[day].push(e);
+  });
+
+  const maxMins = Math.max(...Object.values(byDay).map(d => d.reduce((s, e) => s + e.totalMins, 0)), 480);
+  const BW = 16, GAP = 3, ML = 28, MR = 8, MT = 8, MB = 20;
+  const chartW = daysInMonth * (BW + GAP) + ML + MR;
+  const chartH = 110 + MB;
+  const innerH = chartH - MT - MB;
+
+  // Y axis labels
+  const yLabels = [0, 4, 8].map(h => {
+    const y = MT + innerH - (h / (maxMins / 60)) * innerH;
+    return `<text x="${ML - 4}" y="${y + 4}" font-size="8" fill="var(--text3)" text-anchor="end">${h}h</text>
+            <line x1="${ML}" y1="${y}" x2="${chartW - MR}" y2="${y}" stroke="var(--border)" stroke-width=".5" stroke-dasharray="3,3"/>`;
+  }).join('');
+
+  let bars = '';
+  const jobColors = {};
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayData = byDay[day];
+    if (!dayData) continue;
+    const x = ML + (day - 1) * (BW + GAP);
+    let stackY = MT + innerH;
+    dayData.forEach(e => {
+      const h = (e.totalMins || 0) / maxMins * innerH;
+      if (h < 0.5) return;
+      stackY -= h;
+      const col = e.jobColor || '#3b82f6';
+      jobColors[e.jobId] = { color: col, name: e.jobName };
+      bars += `<rect x="${x}" y="${stackY.toFixed(1)}" width="${BW}" height="${h.toFixed(1)}" fill="${col}" rx="2"/>`;
+    });
+    if (day === 1 || day % 5 === 0 || day === daysInMonth) {
+      bars += `<text x="${x + BW / 2}" y="${chartH - 4}" font-size="8" fill="var(--text3)" text-anchor="middle">${day}</text>`;
+    }
+  }
+
+  const legend = Object.values(jobColors).map(j =>
+    `<div class="cl-item"><div class="cl-dot" style="background:${j.color}"></div>${j.name}</div>`).join('');
+
+  return `
+    <div class="card">
+      <div class="card-title">📈 גרף שעות לפי יום</div>
+      <div class="chart-scroll" id="chart-wrap">
+        <svg width="${chartW}" height="${chartH}" style="display:block">
+          <line x1="${ML}" y1="${MT}" x2="${ML}" y2="${MT + innerH}" stroke="var(--border)" stroke-width="1"/>
+          ${yLabels}${bars}
+        </svg>
+      </div>
+      ${legend ? `<div class="chart-legend">${legend}</div>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  COPY DAY
+// ═══════════════════════════════════════════════════════════
+function copyDay(fromDate) {
+  const dayEntries = S.entries.filter(e => e.date === fromDate);
+  if (dayEntries.length === 0) { toast('אין רשומות ביום זה', true); return; }
+  const today = fmtDateISO(new Date());
+  // Open entry modal for each (only first for simplicity, user can add more)
+  const e = dayEntries[0];
+  openAddEntry({ date: today, clockIn: e.clockIn, clockOut: e.clockOut, jobId: e.jobId });
+  toast(`📋 הועתק מ-${fmtDateDisplay(fromDate)}`);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EXPORT CSV
+// ═══════════════════════════════════════════════════════════
+function exportCSV() {
+  if (S.entries.length === 0) { toast('אין רשומות לייצוא', true); return; }
+  const rows = [
+    ['תאריך', 'עבודה', 'כניסה', 'יציאה', 'שעות', 'הכנסה (₪)'],
+    ...S.entries.map(e => [
+      fmtDateDisplay(e.date), e.jobName, e.clockIn, e.clockOut,
+      (e.totalMins / 60).toFixed(2), (e.earnings || 0).toFixed(2)
+    ])
+  ];
+  // Totals row
+  const totalH = S.entries.reduce((s, e) => s + e.totalMins, 0) / 60;
+  const totalE = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  rows.push(['', 'סה"כ', '', '', totalH.toFixed(2), totalE.toFixed(2)]);
+
+  const csv = '\uFEFF' + rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `workhours_${HE_MONTHS[S.month]}_${S.year}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('📥 קובץ CSV הורד!');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PRINT / PDF
+// ═══════════════════════════════════════════════════════════
+function printReport() {
+  window.print();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SHARE REPORT
+// ═══════════════════════════════════════════════════════════
+async function shareReport() {
+  const totalMins = S.entries.reduce((s, e) => s + e.totalMins, 0);
+  const totalEarn = S.entries.reduce((s, e) => s + (e.earnings || 0), 0);
+  const days = new Set(S.entries.map(e => e.date)).size;
+  const text = `דוח WorkHours — ${HE_MONTHS[S.month]} ${S.year}\n` +
+    `ימי עבודה: ${days}\n` +
+    `סה"כ שעות: ${fmtMins(totalMins)}\n` +
+    `סה"כ הכנסה: ${fmtMoney(totalEarn)}\n` +
+    `ממוצע ליום: ${fmtMins(days > 0 ? Math.round(totalMins / days) : 0)}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: 'דוח WorkHours', text });
+    } else {
+      await navigator.clipboard.writeText(text);
+      toast('📋 הדוח הועתק ללוח!');
+    }
+  } catch (e) {
+    toast('שגיאה בשיתוף', true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  REMINDER (clock-in too long)
+// ═══════════════════════════════════════════════════════════
+let _reminderTimer = null;
+function startReminder() {
+  stopReminder();
+  _reminderTimer = setInterval(() => {
+    if (!S.activeSession) { stopReminder(); return; }
+    const elapsed = (Date.now() - new Date(S.activeSession.clockIn)) / 3600000;
+    if (elapsed >= 10) {
+      haptic('medium');
+      if (Notification.permission === 'granted') {
+        new Notification('WorkHours ⏰', {
+          body: `שכחת לצאת מ-${S.activeSession.jobName}? עבדת כבר ${Math.floor(elapsed)} שעות.`,
+          icon: 'icons/icon-192.png'
+        });
+      } else {
+        toast(`⏰ שכחת לצאת? עבדת ${Math.floor(elapsed)} שעות ב-${S.activeSession.jobName}`, false);
+      }
+      stopReminder(); // Only alert once
+    }
+  }, 5 * 60 * 1000); // Check every 5 minutes
+
+  // Request notification permission quietly
+  if (Notification && Notification.permission === 'default') {
+    Notification.requestPermission().catch(() => {});
+  }
+}
+
+function stopReminder() {
+  if (_reminderTimer) { clearInterval(_reminderTimer); _reminderTimer = null; }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OFFLINE CACHE
+// ═══════════════════════════════════════════════════════════
+const CACHE_PFX = 'wh_cache_';
+
+function cacheEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  localStorage.setItem(key, JSON.stringify(S.entries));
+}
+
+function loadCachedEntries() {
+  const key = CACHE_PFX + S.year + '_' + S.month;
+  const raw = localStorage.getItem(key);
+  if (raw) { S.entries = JSON.parse(raw); return true; }
+  return false;
+}
+
+function watchOffline() {
+  const bar = qs('offline-bar');
+  window.addEventListener('online', () => { if (bar) bar.classList.remove('show'); });
+  window.addEventListener('offline', () => { if (bar) bar.classList.add('show'); });
+  if (!navigator.onLine && bar) bar.classList.add('show');
+}
+
+// Wrap loadEntries to use cache
+const _origLoadEntries = loadEntries;
+loadEntries = async function() {
+  if (!navigator.onLine) {
+    loadCachedEntries();
+    return;
+  }
+  await _origLoadEntries();
+  cacheEntries();
+};
+
+// ═══════════════════════════════════════════════════════════
+//  TIME PICKER
+// ═══════════════════════════════════════════════════════════
+let _tpField = null;
+
+function openTp(fieldId, title) {
+  _tpField = fieldId;
+  qs('tp-title').textContent = title || 'בחר שעה';
+  const cur = qs(fieldId)?.value || '';
+  const [hh, mm] = cur ? cur.split(':') : [new Date().getHours().toString().padStart(2,'0'), '00'];
+
+  // Build hour items 00-23
+  let hHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 24; i++) {
+    const v = String(i).padStart(2,'0');
+    hHtml += `<div class="tp-item${v===hh?' sel':''}" data-v="${v}" onclick="tpSel(this,'h')">${v}</div>`;
+  }
+  hHtml += '<div class="tp-pad"></div>';
+
+  // Build minute items 00-59
+  let mHtml = '<div class="tp-pad"></div>';
+  for (let i = 0; i < 60; i++) {
+    const v = String(i).padStart(2,'0');
+    mHtml += `<div class="tp-item${v===mm?' sel':''}" data-v="${v}" onclick="tpSel(this,'m')">${v}</div>`;
+  }
+  mHtml += '<div class="tp-pad"></div>';
+
+  setHTML('tp-h', hHtml);
+  setHTML('tp-m', mHtml);
+
+  // Scroll to selected
+  setTimeout(() => {
+    const selH = qs('tp-h').querySelector('.sel');
+    const selM = qs('tp-m').querySelector('.sel');
+    if (selH) selH.scrollIntoView({ block: 'center' });
+    if (selM) selM.scrollIntoView({ block: 'center' });
+    tpUpdateDisplay();
+  }, 30);
+
+  qs('tp-overlay').classList.add('active');
+}
+
+function tpSel(el, col) {
+  const container = qs(col === 'h' ? 'tp-h' : 'tp-m');
+  container.querySelectorAll('.tp-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
+  el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  tpUpdateDisplay();
+}
+
+function tpUpdateDisplay() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  const h = hEl?.dataset.v || '00';
+  const m = mEl?.dataset.v || '00';
+  qs('tp-disp').textContent = `${h}:${m}`;
+}
+
+function applyTp() {
+  const hEl = qs('tp-h')?.querySelector('.sel');
+  const mEl = qs('tp-m')?.querySelector('.sel');
+  if (_tpField && hEl && mEl) {
+    const val = `${hEl.dataset.v}:${mEl.dataset.v}`;
+    const field = qs(_tpField);
+    if (field) { field.value = val; updateEntryCalc(); }
+  }
+  closeTp();
+}
+
+function closeTp() {
+  qs('tp-overlay').classList.remove('active');
+  _tpField = null;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  MULTIPLE SCAN QUEUE
+// ═══════════════════════════════════════════════════════════
+let _scanQueue = [];
+
+async function handleMultiScan(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+  for (const file of files) {
+    if (!file.type.startsWith('image/')) continue;
+    const dataUrl = await new Promise(res => {
+      const r = new FileReader();
+      r.onload = e => res(e.target.result);
+      r.readAsDataURL(file);
+    });
+    _scanQueue.push({ file, dataUrl, b64: dataUrl.split(',')[1], mime: file.type, status: 'pending', result: null });
+  }
+  renderScanQueue();
+  // Auto process
+  await processScanQueue();
+}
+
+function renderScanQueue() {
+  if (_scanQueue.length === 0) { setHTML('home-scan-queue', ''); return; }
+  const items = _scanQueue.map((item, i) => {
+    const statusMap = { pending: '⏳ ממתין', processing: '🔄 מעבד...', ok: '✅ זוהה', err: '❌ שגיאה' };
+    const cls = item.status === 'ok' ? 'ok' : item.status === 'err' ? 'err' : 'pending';
+    const dateDisp = item.result?.date ? fmtDateDisplay(item.result.date) : '';
+    const timeDisp = item.result ? `${item.result.clockIn||'?'}–${item.result.clockOut||'?'}` : '';
+    return `<div class="sq-item">
+      <img class="sq-thumb" src="${item.dataUrl}" alt="תלוש ${i+1}">
+      <div class="sq-info">
+        <div class="sq-name">תלוש ${i+1}</div>
+        <div class="sq-state ${cls}">${statusMap[item.status]||item.status}</div>
+        ${dateDisp ? `<div class="sq-date">${dateDisp} ${timeDisp}</div>` : ''}
+      </div>
+      ${item.status === 'ok' ? `<button class="btn-icon" style="font-size:11px" onclick="applyScanQueueItem(${i})">שמור</button>` : ''}
+      <button class="sq-rm" onclick="removeScanQueueItem(${i})">✕</button>
+    </div>`;
+  }).join('');
+  setHTML('home-scan-queue', `<div class="sq-list">${items}</div>`);
+}
+
+async function processScanQueue() {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  if (!apiKey) { toast('הוסף מפתח API בהגדרות', true); return; }
+  for (let i = 0; i < _scanQueue.length; i++) {
+    if (_scanQueue[i].status !== 'pending') continue;
+    _scanQueue[i].status = 'processing';
+    renderScanQueue();
+    try {
+      _scanQueue[i].result = await analyzeWithClaude(_scanQueue[i].b64, _scanQueue[i].mime);
+      _scanQueue[i].status = 'ok';
+    } catch (e) {
+      _scanQueue[i].status = 'err';
+      _scanQueue[i].error = e.message;
+    }
+    renderScanQueue();
+  }
+  const ok = _scanQueue.filter(i => i.status === 'ok').length;
+  toast(`✅ עיבוד הסתיים: ${ok}/${_scanQueue.length} תלושים זוהו`);
+}
+
+function applyScanQueueItem(idx) {
+  const item = _scanQueue[idx];
+  if (!item?.result) return;
+  const date = item.result.date;
+  const defJobId = S.jobs[0]?.id || '';
+  // Find job by name if Claude returned one
+  let jobId = defJobId;
+  if (item.result.jobName) {
+    const match = S.jobs.find(j => j.name.includes(item.result.jobName) || item.result.jobName.includes(j.name));
+    if (match) jobId = match.id;
+  }
+  openAddEntry({ date, clockIn: item.result.clockIn, clockOut: item.result.clockOut, jobId });
+  removeScanQueueItem(idx);
+}
+
+function removeScanQueueItem(idx) {
+  _scanQueue.splice(idx, 1);
+  renderScanQueue();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  ENHANCED analyzeWithClaude (auto job detection)
+// ═══════════════════════════════════════════════════════════
+async function analyzeWithClaude(b64, mime) {
+  const apiKey = localStorage.getItem('anthropic_api_key');
+  const jobNames = S.jobs.map(j => j.name).join(', ');
+  const prompt = `נתח את תלוש העבודה. חלץ:
+- תאריך העבודה
+- שעת כניסה
+- שעת יציאה
+${jobNames ? `- שם מקום העבודה (בדוק אם תואם לאחת מ: ${jobNames})` : ''}
+
+החזר JSON בלבד, ללא markdown:
+{"date":"YYYY-MM-DD","clockIn":"HH:MM","clockOut":"HH:MM","confidence":"high/medium/low","notes":"","jobName":"שם אם זוהה או null"}
+
+אם לא ניתן לחלץ נתון, השתמש ב-null. תאריך היום: ${fmtDateISO(new Date())}`;
+
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-API-Key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-opus-4-5',
+      max_tokens: 300,
+      messages: [{ role: 'user', content: [
+        { type: 'image', source: { type: 'base64', media_type: mime, data: b64 } },
+        { type: 'text', text: prompt }
+      ]}]
+    })
+  });
+
+  if (!resp.ok) {
+    let errMsg = `שגיאת שרת ${resp.status}`;
+    try { const eb = await resp.json(); errMsg = eb.error?.message || errMsg; } catch (_) {}
+    throw new Error(errMsg);
+  }
+  const data = await resp.json();
+  const text = data.content[0].text.replace(/```json|```/g, '').trim();
+  return JSON.parse(text);
+}
+
+// ═══════════════════════════════════════════════════════════
+//  INIT ADDITIONS (called from window.load)
+// ═══════════════════════════════════════════════════════════
+function appExtrasInit() {
+  darkModeInit();
+  watchOffline();
+  // Resume reminder if session was active
+  if (S.activeSession) startReminder();
+}
+
 </script>
+
+<!-- TIME PICKER MODAL -->
+<div id="tp-overlay" onclick="if(event.target===this)closeTp()">
+  <div class="tp-box">
+    <div class="tp-hdr">
+      <div class="tp-hdr-title" id="tp-title">בחר שעה</div>
+      <button class="modal-close" onclick="closeTp()">✕</button>
+    </div>
+    <div class="tp-display" id="tp-disp">00:00</div>
+    <div class="tp-cols">
+      <div class="tp-col">
+        <div class="tp-col-lbl">שעה</div>
+        <div class="tp-scrl" id="tp-h"></div>
+      </div>
+      <div class="tp-col">
+        <div class="tp-col-lbl">דקה</div>
+        <div class="tp-scrl" id="tp-m"></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="applyTp()">✅ אישור</button>
+  </div>
+</div>
+
 </body>
 </html>
